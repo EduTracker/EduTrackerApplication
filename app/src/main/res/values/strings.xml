@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EduTrackerApplication</string>
+    <string name="initial_group_chooser">Choose your Class in ITMO University:</string>
+    <string name="ok_button_text">Continue</string>
 </resources>
