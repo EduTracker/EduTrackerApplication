@@ -1,6 +1,5 @@
 package com.project.itmo2016.edutrackerapplication.models;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
 /**
@@ -20,5 +19,11 @@ public class Time {
     public Time(@NonNull int hour, @NonNull int minute) {
         this.hour = hour;
         this.minute = minute;
+    }
+
+    public Time(@NonNull String time) {
+        String[] str = time.split(":");
+        hour = Integer.parseInt(str[0]);
+        minute = Integer.parseInt(str[1]);
     }
 }

@@ -29,6 +29,8 @@ public class ChooseGroupActivity extends AppCompatActivity
     TextView errorLoadingText;
     Button okButton;
 
+    Schedule schedule = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +40,7 @@ public class ChooseGroupActivity extends AppCompatActivity
         enterGroupLayout = (FrameLayout) findViewById(R.id.enter_group_layout);
         enterField = (EditText) findViewById(R.id.group_edit_text);
         errorInputText = (TextView) findViewById(R.id.choose_group_error);
-        errorLoadingText = (TextView)findViewById(R.id.error_while_loading_text);
+        errorLoadingText = (TextView) findViewById(R.id.error_while_loading_text);
         okButton = (Button) findViewById(R.id.button_ok_choose_group);
 
         loadingLayout.setVisibility(View.VISIBLE);
@@ -58,11 +60,12 @@ public class ChooseGroupActivity extends AppCompatActivity
     public void onLoadFinished(Loader<LoadResult<Schedule>> loader, LoadResult<Schedule> data) {
         Log.d(TAG, "onLoadFinished");
 
-        //TODO debug
         loadingLayout.setVisibility(View.INVISIBLE);
 
         if (data.resultType == ResultType.OK) {
             enterGroupLayout.setVisibility(View.VISIBLE);
+            schedule = data.data;
+            Log.d(TAG, "schedule defined");
         } else {
             errorInputText.setVisibility(View.VISIBLE);
             if (data.resultType == ResultType.NO_INTERNET)
@@ -74,7 +77,6 @@ public class ChooseGroupActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<LoadResult<Schedule>> loader) {
-
     }
 
 //    public static ChooseGroupActivity getInstance() {

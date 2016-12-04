@@ -32,25 +32,6 @@ public class ScheduleLoader extends AsyncTaskLoader<LoadResult<Schedule>> {
             deliverResult(new LoadResult<Schedule>(resultType, data));
     }
 
-//    private void parseResponse(InputStream in) throws Exception {
-//        final JSONObject jsonObj = new JSONObject(IOUtils.readToString(in, "UTF-8"));
-//        parseJson(jsonObj);
-//    }
-
-//    private void parseJson(JSONObject jsonObj) throws Exception {
-//        data = new ArrayList<>();
-//        JSONArray arr = jsonObj.getJSONArray("results");
-//        for (int i = 0; i < arr.length(); i++) {
-//            JSONObject movie = arr.optJSONObject(i);
-//            if (movie == null)
-//                continue;
-//            data.add(new Movie(movie.optString("poster_path"),
-//                    movie.optString("original_title"),
-//                    movie.optString("overview"),
-//                    movie.optString("title")));
-//        }
-//    }
-
     @Override
     public LoadResult<Schedule> loadInBackground() {
         HttpURLConnection connection = null;
@@ -66,8 +47,8 @@ public class ScheduleLoader extends AsyncTaskLoader<LoadResult<Schedule>> {
                 in = connection.getInputStream();
 
                 Log.d(ChooseGroupActivity.TAG, "Connection established, everything cool, starting parsing");
-                IOUtils.readFully(in); //tmp, while parser isn't ready
-//                parseResponse(in);
+
+                data = ParserJSON.parseResponse(in); //parsing and saving a schedule
 
                 resultType = ResultType.OK;
             } else {

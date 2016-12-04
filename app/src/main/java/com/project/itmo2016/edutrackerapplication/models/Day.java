@@ -12,19 +12,22 @@ import java.util.ArrayList;
  */
 public class Day {
 
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({1, 2, 3, 4, 5, 6})
-    public @interface DaysOfTheWeek {
-    }
+//    @Retention(RetentionPolicy.SOURCE)
+//    @IntDef({1, 2, 3, 4, 5, 6})
+//    public @interface DaysOfTheWeek {
+//    }
 
+    /**
+     * Is an int from diapason: [1;6]
+     */
     @NonNull
-    @Day.DaysOfTheWeek
+//    @Day.DaysOfTheWeek
     public final int dayOfTheWeek;
 
     @NonNull
-    public final Lesson[] lessons;
+    public final ArrayList<Lesson> lessons;
 
-    public Day(@NonNull @DaysOfTheWeek int dayOfTheWeek, @NonNull Lesson[] lessons) {
+    public Day(@NonNull ArrayList<Lesson> lessons, @NonNull /*@DaysOfTheWeek*/ int dayOfTheWeek) {
         this.dayOfTheWeek = dayOfTheWeek; //constructor is not convenient, it is a sacrifice for lessons being final
         this.lessons = lessons;
     }
