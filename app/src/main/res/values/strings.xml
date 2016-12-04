@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">EduTrackerApplication</string>
+    <!--strings for choose group activity-->
+    <string name="initial_group_chooser">Enter your group name in ITMO University:</string>
+    <string name="error_group_chooser">The name of group is invalid, ensure you\'re using English letters only</string>
+    <string name="ok_button_text">Continue</string>
+    <string name="default_name_hint">M3238</string>
+    <string name="loading_json">Schedule for ITMO is loading…</string>
+    <string name="error_no_internet_connection">Check your Internet connection</string>
+    <string name="error_while_loading">Error while loading has happened</string>
 </resources>
