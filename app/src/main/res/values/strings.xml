@@ -6,4 +6,6 @@
     <string name="ok_button_text">Continue</string>
     <string name="default_name_hint">M3238</string>
     <string name="loading_json">Schedule for ITMO is loading…</string>
+    <string name="error_no_internet_connection">Check your Internet connection</string>
+    <string name="error_while_loading">Error while loading has happened</string>
 </resources>
