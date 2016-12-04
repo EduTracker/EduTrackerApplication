@@ -34,7 +34,7 @@ public final class IOUtils {
      */
     public static void readFully(InputStream in) throws IOException {
         byte[] buffer = getIOBuffer();
-        while (in.read(buffer) >= 0);
+        while (in.read(buffer) >= 0) ;
     }
 
     public static void closeSilently(Closeable closeable) {
@@ -43,7 +43,8 @@ public final class IOUtils {
         }
         try {
             closeable.close();
-        } catch (Exception e) {} // ignore
+        } catch (Exception e) {
+        } // ignore
     }
 
     public static void readAndCloseSilently(InputStream in) {
@@ -52,7 +53,8 @@ public final class IOUtils {
         }
         try {
             readFully(in);
-        } catch (IOException e) {} // ignore
+        } catch (IOException e) {
+        } // ignore
         closeSilently(in);
     }
 
@@ -84,5 +86,6 @@ public final class IOUtils {
     private static final ThreadLocal<byte[]> bufferThreadLocal = new ThreadLocal<>();
 
 
-    private IOUtils() {}
+    private IOUtils() {
+    }
 }

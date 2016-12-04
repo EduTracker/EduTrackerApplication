@@ -3,6 +3,7 @@ package com.project.itmo2016.edutrackerapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -24,8 +25,8 @@ public class ChooseGroupActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<LoadResult<GlobalSchedule>> {
 
     public static final String TAG = "ChooseGroupActivity tag";
+    private static final String KEY_EDIT_TEXT = "edit text";
 
-    //    static ChooseGroupActivity currentRunningInstance = null;
     FrameLayout loadingLayout;
     FrameLayout enterGroupLayout;
     EditText enterField;
@@ -38,6 +39,7 @@ public class ChooseGroupActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_group);
 
@@ -50,6 +52,9 @@ public class ChooseGroupActivity extends AppCompatActivity
         okButton.setOnClickListener(okListener);
 
         loadingLayout.setVisibility(View.VISIBLE);
+
+        if (savedInstanceState != null)
+            loadFromSavedState(savedInstanceState);
 
         Bundle b = getIntent().getExtras();
         getSupportLoaderManager().initLoader(0, b, this);
@@ -91,14 +96,14 @@ public class ChooseGroupActivity extends AppCompatActivity
         public void onClick(View v) {
             String groupName = enterField.getText().toString();
 
-            if(groupName.equals(""))
+            if (groupName.equals(""))
                 groupName = getString(R.string.default_name_hint); //default group name
 
             Log.d(TAG, "okButton pressed, groupName entered is: " + groupName);
 
             //check if there is schedule for such group
             localSchedule = Input.processGroupName(globalSchedule, groupName);
-            if(localSchedule != null) {
+            if (localSchedule != null) {
                 Log.d(TAG, "group " + groupName + " found in global schedule, leaving chooseGroupActivity");
                 exitActivity();
             } else {
@@ -113,5 +118,15 @@ public class ChooseGroupActivity extends AppCompatActivity
         resultIntent.putExtra("localSchedule", localSchedule);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outState.putString(KEY_EDIT_TEXT, enterField.getText().toString());
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    private void loadFromSavedState(Bundle savedInstanceState) {
+        enterField.setText(savedInstanceState.getString(KEY_EDIT_TEXT));
     }
 }

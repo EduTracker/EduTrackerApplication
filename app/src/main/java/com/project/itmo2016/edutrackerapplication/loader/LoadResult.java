@@ -6,14 +6,15 @@ import android.support.annotation.Nullable;
 /**
  * Created by Aleksandr Tukallo on 01.12.16.
  */
+
 /**
- * Результат загрузки данных.
+ * Result of data loading
  */
 
 public class LoadResult<T> {
 
     /**
-     * Result of loading (ok\no internet connection/another error)
+     * Result of loading (ok/no internet connection/another error)
      */
     @NonNull
     public final ResultType resultType;

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Class for storing schedule for only one group.
  * It implements Serializable, because object of this class is returned from ChooseGroupActibity
- *      as an Extra field in Intent, so it must be Serializable\Parcelable.
+ * as an Extra field in Intent, so it must be Serializable\Parcelable.
  */
 public class LocalSchedule implements Serializable {
 
