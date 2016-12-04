@@ -2,10 +2,12 @@ package com.project.itmo2016.edutrackerapplication.models;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 /**
  * Created by Aleksandr Tukallo on 01.12.16.
  */
-public class Time {
+public class Time implements Serializable {
     @NonNull
     public final int hour;
 

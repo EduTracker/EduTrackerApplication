@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.project.itmo2016.edutrackerapplication.ChooseGroupActivity;
-import com.project.itmo2016.edutrackerapplication.models.Schedule;
+import com.project.itmo2016.edutrackerapplication.models.GlobalSchedule;
 import com.project.itmo2016.edutrackerapplication.utils.IOUtils;
 
 import java.io.IOException;
@@ -15,9 +15,9 @@ import java.net.HttpURLConnection;
 /**
  * Created by Aleksandr Tukallo on 01.12.16.
  */
-public class ScheduleLoader extends AsyncTaskLoader<LoadResult<Schedule>> {
+public class ScheduleLoader extends AsyncTaskLoader<LoadResult<GlobalSchedule>> {
 
-    private Schedule data = null;
+    private GlobalSchedule data = null;
     ResultType resultType = ResultType.ERROR;
 
     public ScheduleLoader(Context context) {
@@ -29,11 +29,11 @@ public class ScheduleLoader extends AsyncTaskLoader<LoadResult<Schedule>> {
         if (data == null)
             forceLoad();
         else
-            deliverResult(new LoadResult<Schedule>(resultType, data));
+            deliverResult(new LoadResult<GlobalSchedule>(resultType, data));
     }
 
     @Override
-    public LoadResult<Schedule> loadInBackground() {
+    public LoadResult<GlobalSchedule> loadInBackground() {
         HttpURLConnection connection = null;
         InputStream in = null;
 

@@ -9,15 +9,15 @@ import java.util.ArrayList;
  */
 
 
-
-public class Schedule {
+/**
+ * Class for storing schedule for whole university
+ */
+public class GlobalSchedule {
 
     @NonNull
     public final ArrayList<Faculty> faculties;
 
-    public Schedule(@NonNull ArrayList<Faculty> faculties) {
+    public GlobalSchedule(@NonNull ArrayList<Faculty> faculties) {
         this.faculties = faculties;
     }
-
-    //mb also need to store when was loaded last time
 }

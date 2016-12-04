@@ -3,6 +3,7 @@ package com.project.itmo2016.edutrackerapplication.models;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by Aleksandr Tukallo on 01.12.16.
  */
-public class Day {
+public class Day implements Serializable{
 
 //    @Retention(RetentionPolicy.SOURCE)
 //    @IntDef({1, 2, 3, 4, 5, 6})
