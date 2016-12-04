@@ -11,8 +11,6 @@ import java.net.URL;
  */
 public class ITMOScheduleApi {
 
-//    private static final String API_KEY = "e58d2b7c6c07252f6aa52391f397b065";
-
     //tmp json is stored here
     private static final String BASE_URI = "https://api.myjson.com/bins/47o7r";
 

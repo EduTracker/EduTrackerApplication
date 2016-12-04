@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by Aleksandr Tukallo on 01.12.16.
  */
-public class Day implements Serializable{
+public class Day implements Serializable {
 
 //    @Retention(RetentionPolicy.SOURCE)
 //    @IntDef({1, 2, 3, 4, 5, 6})

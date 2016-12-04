@@ -8,7 +8,6 @@ import java.util.ArrayList;
  * Created by Aleksandr Tukallo on 01.12.16.
  */
 
-
 /**
  * Class for storing schedule for whole university
  */
