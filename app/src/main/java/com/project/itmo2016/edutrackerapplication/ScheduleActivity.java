@@ -15,7 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.project.itmo2016.edutrackerapplication.models.LocalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.LocalSchedule;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

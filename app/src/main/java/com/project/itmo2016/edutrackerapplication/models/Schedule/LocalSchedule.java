@@ -1,4 +1,4 @@
-package com.project.itmo2016.edutrackerapplication.models;
+package com.project.itmo2016.edutrackerapplication.models.Schedule;
 
 /**
  * Created by Aleksandr Tukallo on 04.12.16.

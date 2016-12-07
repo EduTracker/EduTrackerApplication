@@ -3,13 +3,13 @@ package com.project.itmo2016.edutrackerapplication.loader;
 import android.util.Log;
 
 import com.project.itmo2016.edutrackerapplication.ChooseGroupActivity;
-import com.project.itmo2016.edutrackerapplication.models.Auditory;
-import com.project.itmo2016.edutrackerapplication.models.Day;
-import com.project.itmo2016.edutrackerapplication.models.Faculty;
-import com.project.itmo2016.edutrackerapplication.models.GlobalSchedule;
-import com.project.itmo2016.edutrackerapplication.models.Group;
-import com.project.itmo2016.edutrackerapplication.models.Lesson;
-import com.project.itmo2016.edutrackerapplication.models.Time;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.Auditory;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.Day;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.Faculty;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.GlobalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.Group;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.Lesson;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.Time;
 import com.project.itmo2016.edutrackerapplication.utils.IOUtils;
 
 import org.json.JSONArray;

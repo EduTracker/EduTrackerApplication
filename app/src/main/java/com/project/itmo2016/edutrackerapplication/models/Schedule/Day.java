@@ -1,11 +1,8 @@
-package com.project.itmo2016.edutrackerapplication.models;
+package com.project.itmo2016.edutrackerapplication.models.Schedule;
 
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
 import java.io.Serializable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 /**
