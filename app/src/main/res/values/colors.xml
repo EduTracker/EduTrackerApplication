@@ -4,4 +4,13 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="background_gray">#A7A2A1</color>
+
+    <!--Colors for bar chart-->
+    <color name="attendance_grade_1">#e20b0b</color>
+    <color name="attendance_grade_2">#ec3b10</color>
+    <color name="attendance_grade_3">#f06c0b</color>
+    <color name="attendance_grade_4">#ece810</color>
+    <color name="attendance_grade_5">#c0ec10</color>
+    <color name="attendance_grade_6">#9fec10</color>
+    <color name="attendance_grade_7">#5ff00b</color>
 </resources>

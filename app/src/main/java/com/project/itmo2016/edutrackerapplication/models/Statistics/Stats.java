@@ -2,13 +2,14 @@ package com.project.itmo2016.edutrackerapplication.models.Statistics;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Aleksandr Tukallo on 07.12.16.
  */
 
-public class Stats {
+public class Stats implements Serializable {
     @NonNull
     public final ArrayList<StatsDay> attendanceHistory;
 

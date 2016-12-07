@@ -2,6 +2,7 @@ package com.project.itmo2016.edutrackerapplication.models.Statistics;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -9,7 +10,7 @@ import java.util.Date;
  * Created by Aleksandr Tukallo on 07.12.16.
  */
 
-public class StatsDay {
+public class StatsDay implements Serializable {
     @NonNull
     public final ArrayList<Boolean> lessons; //size of array equals number of lessons in schedule.
 
