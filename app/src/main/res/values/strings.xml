@@ -8,4 +8,10 @@
     <string name="loading_json">Schedule for ITMO is loading…</string>
     <string name="error_no_internet_connection">Check your Internet connection</string>
     <string name="error_while_loading">Error while loading has happened</string>
+    <!--strings for schedule activity-->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="navbar_schedule">Расписаие</string>
+    <string name="navbar_stats">Статистика</string>
 </resources>
