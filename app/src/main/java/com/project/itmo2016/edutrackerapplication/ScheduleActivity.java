@@ -42,13 +42,14 @@ public class ScheduleActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
 
-        //here localSchedule is initialized
-        if (isLocalScheduleDownloaded()) { //TODO here negation needed
+        //here localSchedule and pathToStats is initialized
+        if (!isLocalScheduleDownloaded()) { //TODO here negation needed
             Log.d(TAG, "localSchedule must be downloaded");
             startActivityForResult(new Intent(this, ChooseGroupActivity.class), REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY);
         } else {
             Log.d(TAG, "localSchedule was already downloaded, loading it from file");
             localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
+            pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
         }
 
         super.onCreate(savedInstanceState);
@@ -136,5 +137,4 @@ public class ScheduleActivity extends AppCompatActivity
         File f = new File(getFilesDir(), PATH_TO_LOCAL_SCHEDULE);
         return f.exists();
     }
-
 }
