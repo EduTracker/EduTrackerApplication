@@ -1,9 +1,6 @@
 package com.project.itmo2016.edutrackerapplication.utils;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.project.itmo2016.edutrackerapplication.models.Schedule.LocalSchedule;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

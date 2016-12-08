@@ -42,7 +42,7 @@ public class ScheduleActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
 
-        //here localSchedule and pathToStats is initialized
+        //here localSchedule and pathToStats are initialized
         if (!isLocalScheduleDownloaded()) { //TODO here negation needed
             Log.d(TAG, "localSchedule must be downloaded");
             startActivityForResult(new Intent(this, ChooseGroupActivity.class), REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY);
