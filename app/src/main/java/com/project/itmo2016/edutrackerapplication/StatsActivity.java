@@ -108,7 +108,7 @@ public class StatsActivity extends AppCompatActivity {
             //entries when no periods are not shifted -- no bars will be shown
             entries.add(new BarEntry(xValue, yValue));
 
-            colors[i] = ContextCompat.getColor(this, R.color.no_periods); //color here just for fun. No bars are shown
+            colors[i] = ContextCompat.getColor(this, R.color.grey); //color here just for fun. No bars are shown
 
             Log.d(TAG, Integer.toString(i) + "th entry: " + Float.toString(xValue) + " " + Float.toString(yValue));
         }
@@ -122,6 +122,8 @@ public class StatsActivity extends AppCompatActivity {
 
         //chart background is not white
         barChart.setDrawGridBackground(true);
+        barChart.setGridBackgroundColor(ContextCompat.getColor(this, R.color.grey));
+//        barChart.setBackgroundColor(ContextCompat.getColor(this, R.color.grey));
 
         //disabling chart description
         Description descr = new Description();
