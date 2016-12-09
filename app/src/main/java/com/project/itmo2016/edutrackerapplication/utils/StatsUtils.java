@@ -6,11 +6,14 @@ import com.project.itmo2016.edutrackerapplication.R;
  * Created by Aleksandr Tukallo on 08.12.16.
  */
 
-public class StatsUtils {
+/**
+ * Class with utils for working with Stats for barChart in StatsActivity
+ */
+public final class StatsUtils {
 
-    private static class Pair {
-        float yValue;
-        int correspondingColor;
+    private final static class Pair {
+        final float yValue;
+        final int correspondingColor;
 
         Pair(float yValue, int correspondingColor) {
             this.yValue = yValue;
@@ -18,6 +21,9 @@ public class StatsUtils {
         }
     }
 
+    /**
+     * Array for storing yValues and corresponding colors
+     */
     private static final Pair[] colorsForValues = new Pair[]{
             new Pair(0f, R.color.attendance_grade_1),
             new Pair(0.166f, R.color.attendance_grade_2),
@@ -27,8 +33,15 @@ public class StatsUtils {
             new Pair(0.831f, R.color.attendance_grade_6),
             new Pair(1.0f, R.color.attendance_grade_7)};
 
-    //method goes through all the array with colors and yValues in O(n) time and chooses the closest yValue
+    /**
+     * Method looks for, closest to yValue, Pair.yValue in array.
+     * It is done in O(n) time, can be optimized with search tree.
+     *
+     * @param yValue
+     * @return Pair with closest yValue to parameter is returned.
+     */
     private static Pair getClosestPairToYValue(float yValue) {
+
         for (int i = 1; i < colorsForValues.length; i++) {
             if (colorsForValues[i - 1].yValue <= yValue && colorsForValues[i].yValue >= yValue) {
                 if (Math.abs(colorsForValues[i - 1].yValue - yValue) < Math.abs(colorsForValues[i].yValue - yValue))
@@ -36,10 +49,21 @@ public class StatsUtils {
                 else return colorsForValues[i];
             }
         }
-        return new Pair(yValue, R.color.black); //it must never be returned. black just not to cause NullPtrException
+
+        //if yValue is not in range (it must never happen), still closest is returned
+        if (yValue < colorsForValues[0].yValue)
+            return colorsForValues[0];
+        else return colorsForValues[colorsForValues.length - 1];
     }
 
-    //returns color for yValue
+    /**
+     * Method returns a color for bar with given height
+     *
+     * @param yValue is a height of a bar
+     * @param shift  is a shift to show bars with zero attendance. It is needed, because methods in this
+     *               class suppose, that yValue is in [0;1] segment
+     * @return color is returned
+     */
     public static int getColorForYValue(float yValue, float shift) {
         return getClosestPairToYValue(yValue - shift).correspondingColor;
     }

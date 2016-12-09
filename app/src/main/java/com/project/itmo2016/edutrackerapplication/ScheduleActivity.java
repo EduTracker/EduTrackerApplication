@@ -34,20 +34,24 @@ public class ScheduleActivity extends AppCompatActivity
     private static final String PATH_TO_LOCAL_SCHEDULE = "localSchedule";
     private static final String BASE_FOR_PATH_TO_STATS = "stats";
     public static final String EXTRA_PATH_TO_STATS = "extraPathToStats";
-    String pathToStats; // = base + groupName
+    private String pathToStats; // = base + groupName
 
-    LocalSchedule localSchedule = null;
+    private LocalSchedule localSchedule = null;
 
+    /**
+     * localSchedule and pathToStats are initialized here
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
 
-        //here localSchedule and pathToStats are initialized
-        if (!isLocalScheduleDownloaded()) { //TODO here negation needed
+        if (!isLocalScheduleDownloaded() || true) { //TODO true here only for debug
             Log.d(TAG, "localSchedule must be downloaded");
+
             startActivityForResult(new Intent(this, ChooseGroupActivity.class), REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY);
         } else {
             Log.d(TAG, "localSchedule was already downloaded, loading it from file");
+
             localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
             pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
         }
@@ -93,15 +97,18 @@ public class ScheduleActivity extends AppCompatActivity
 
     private void onLocalScheduleReturned(Intent data) {
         localSchedule = (LocalSchedule) data.getSerializableExtra("localSchedule");
+
         Log.d(TAG, "save local schedule to file");
+
         FileIOUtils.saveObjectToFile(localSchedule, PATH_TO_LOCAL_SCHEDULE, this);
         pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
 
         //TODO the idea is that once in a period stats will be extracted from file, updated according
         //     to attendence\miss of the pair and written back to the file.
 
-        Stats newStats = new Stats(new ArrayList<StatsDay>(), localSchedule.groupName);
         Log.d(TAG, "save new stats to file");
+
+        Stats newStats = new Stats(new ArrayList<StatsDay>(), localSchedule.groupName);
         FileIOUtils.saveObjectToFile(newStats, pathToStats, this);
     }
 

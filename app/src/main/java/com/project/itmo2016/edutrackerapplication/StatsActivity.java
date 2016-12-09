@@ -28,11 +28,15 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class StatsActivity extends AppCompatActivity {
 
-    //invariant for stats: there is an array with booleans for every day [except Sundays], since the group was chosen
     Stats stats;
 
     public static final String TAG = "StatsActivity";
-    private static final float shiftUpwards = 0.2f; //all bars are moved upwards to distinguish days without periods and days with zero attendance
+
+    /**
+     * shiftUpwards is needed to distinguish days with zero attendance and days without any periods.
+     * Days with zero attendance are shifted a bit upwards. As a result a red bar for them can be seen.
+     */
+    private static final float shiftUpwards = 0.2f;
 
     BarChart barChart;
 
@@ -51,6 +55,10 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     //TODO add navbar to this activity
+
+    /**
+     * This method initializes stats.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +66,7 @@ public class StatsActivity extends AppCompatActivity {
 
         //initializing stats
         stats = FileIOUtils.loadSerializableFromFile(getIntent().getExtras().getString(ScheduleActivity.EXTRA_PATH_TO_STATS), this);
+
         tmpFunctionForDebugOnlyWhichEnfillsStatsToTestChart(); //TODO tmp only
         if (stats == null) {
             Log.d(TAG, "unable to load stats from file!!! exiting activity");
@@ -68,7 +77,10 @@ public class StatsActivity extends AppCompatActivity {
         setupBarChartWeek();
     }
 
-    //setups barChart to display bars of attendance for current week
+    /**
+     * Method setups barChart to display attendance within current week.
+     * All data is generated here.
+     */
     private void setupBarChartWeek() {
         Log.d(TAG, "creating barChart to display current week attendance");
         barChart = (BarChart) findViewById(R.id.bar_chart);
@@ -89,13 +101,14 @@ public class StatsActivity extends AppCompatActivity {
 
             Log.d(TAG, Integer.toString(i) + "th entry: " + Float.toString(xValue) + " " + Float.toString(yValue));
         }
+
         for (int i = numberOfDaysPassedInCurWeek; i < 6; i++) { //fill chart up to 6 days with zeroes
             float xValue = (float) i;
             float yValue = 0.0f;
             //entries when no periods are not shifted -- no bars will be shown
             entries.add(new BarEntry(xValue, yValue));
 
-            colors[i] = ContextCompat.getColor(this, R.color.no_periods);
+            colors[i] = ContextCompat.getColor(this, R.color.no_periods); //color here just for fun. No bars are shown
 
             Log.d(TAG, Integer.toString(i) + "th entry: " + Float.toString(xValue) + " " + Float.toString(yValue));
         }
@@ -106,6 +119,9 @@ public class StatsActivity extends AppCompatActivity {
         //TODO working with x and y axis legend needed
         BarData barData = new BarData(dataSet);
         barChart.setData(barData);
+
+        //chart background is not white
+        barChart.setDrawGridBackground(true);
 
         //disabling chart description
         Description descr = new Description();

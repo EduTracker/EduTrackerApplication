@@ -14,6 +14,7 @@ public class Time implements Serializable {
     @NonNull
     public final int minute;
 
+    @Override
     public String toString() {
         return Integer.toString(hour) + ":" + Integer.toString(minute);
     }

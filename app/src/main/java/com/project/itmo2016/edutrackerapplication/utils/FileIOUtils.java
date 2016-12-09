@@ -15,8 +15,19 @@ import java.io.Serializable;
  * Created by Aleksandr Tukallo on 07.12.16.
  */
 
-public class FileIOUtils {
+/**
+ * Class with utils for working with Files
+ */
+public final class FileIOUtils {
 
+    /**
+     * Method saves Serializable object to file.
+     * If not able to save object to file, object is not saved to file, no Exception thrown.
+     *
+     * @param obj     is a Serializable object, that will be written to file
+     * @param path    is a fileName, where object will be saved
+     * @param context
+     */
     public static void saveObjectToFile(Serializable obj, String path, Context context) {
         File f = new File(context.getFilesDir(), path);
 
@@ -43,6 +54,16 @@ public class FileIOUtils {
         }
     }
 
+    /**
+     * Method reads an object of type T from file and returns it. Correct T must be provided. Else null is returned.
+     * Warnings about unchecked cast to type T are suppressed
+     *
+     * @param path    is a path to file, from where to read
+     * @param context
+     * @param <T>     is a type of object in file
+     * @return read object of type T is returned. If unable to read object from file, null is returned.
+     */
+    @SuppressWarnings("unchecked")
     public static <T> T loadSerializableFromFile(String path, Context context) {
         try {
             FileInputStream streamIn = new FileInputStream(context.getFilesDir() + "/" + path);

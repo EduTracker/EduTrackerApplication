@@ -26,7 +26,7 @@ public class Day implements Serializable {
     public final ArrayList<Lesson> lessons;
 
     public Day(@NonNull ArrayList<Lesson> lessons, @NonNull /*@DaysOfTheWeek*/ int dayOfTheWeek) {
-        this.dayOfTheWeek = dayOfTheWeek; //constructor is not convenient, it is a sacrifice for lessons being final
+        this.dayOfTheWeek = dayOfTheWeek;
         this.lessons = lessons;
     }
 }

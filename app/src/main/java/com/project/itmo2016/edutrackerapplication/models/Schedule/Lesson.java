@@ -35,11 +35,11 @@ public class Lesson implements Serializable {
     public final int parity;
 
 //    @NonNull
-//    public final String teachers; //don't nees it currently
+//    public final String teachers; //don't need teacher names currently
     //Also do not need type, date_start, date_end
 
     /**
-     * Auditory can be unfortunately null
+     * Auditory can be null, if it is null in JSON parsed, which happens.
      */
     public final ArrayList<Auditory> auditories;
 
