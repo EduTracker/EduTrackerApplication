@@ -1,7 +1,7 @@
 package com.project.itmo2016.edutrackerapplication.input;
 
-import com.project.itmo2016.edutrackerapplication.models.GlobalSchedule;
-import com.project.itmo2016.edutrackerapplication.models.LocalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.GlobalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.Schedule.LocalSchedule;
 
 /**
  * Created by Aleksandr Tukallo on 04.12.16.

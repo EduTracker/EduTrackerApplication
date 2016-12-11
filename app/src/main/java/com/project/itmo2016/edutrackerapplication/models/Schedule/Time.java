@@ -1,4 +1,4 @@
-package com.project.itmo2016.edutrackerapplication.models;
+package com.project.itmo2016.edutrackerapplication.models.Schedule;
 
 import android.support.annotation.NonNull;
 
@@ -14,6 +14,7 @@ public class Time implements Serializable {
     @NonNull
     public final int minute;
 
+    @Override
     public String toString() {
         return Integer.toString(hour) + ":" + Integer.toString(minute);
     }

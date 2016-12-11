@@ -17,16 +17,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+
+import com.project.itmo2016.edutrackerapplication.models.Schedule.LocalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.Statistics.Stats;
+import com.project.itmo2016.edutrackerapplication.models.Statistics.StatsDay;
+import com.project.itmo2016.edutrackerapplication.utils.FileIOUtils;
+
+
 import com.project.itmo2016.edutrackerapplication.loader.WeekRecycleAdapter;
-import com.project.itmo2016.edutrackerapplication.models.LocalSchedule;
 
 import org.w3c.dom.Text;
 
+
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 /**
  * Created by Aleksandr Tukallo on 30.11.16.
@@ -34,25 +40,38 @@ import java.io.ObjectOutputStream;
 public class ScheduleActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    final int REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY = 1;
-    final String TAG = "ScheduleActivity tag";
-    final String PATH_TO_LOCAL_SCHEDULE = "localSchedule.txt";
+    private static final int REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY = 1;
+    public static final String TAG = "ScheduleActivity tag";
+    private static final String PATH_TO_LOCAL_SCHEDULE = "localSchedule";
+    private static final String BASE_FOR_PATH_TO_STATS = "stats";
+    public static final String EXTRA_PATH_TO_STATS = "extraPathToStats";
+    private String pathToStats; // = base + groupName
 
-    LocalSchedule localSchedule = null;
+    private LocalSchedule localSchedule = null;
+
+
+    /**
+     * localSchedule and pathToStats are initialized here
+     */
 
     TextView error;
     RecyclerView recyclerView;
     WeekRecycleAdapter adapter = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
 
-        if (!isLocalScheduleDownloaded()) {
+        if (!isLocalScheduleDownloaded() || true) { //TODO true here only for debug
             Log.d(TAG, "localSchedule must be downloaded");
+
             startActivityForResult(new Intent(this, ChooseGroupActivity.class), REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY);
         } else {
-            Log.d(TAG, "localSchedule was already downloaded, no need to leave ScheduleActivity");
+            Log.d(TAG, "localSchedule was already downloaded, loading it from file");
+
+            localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
+            pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
         }
 
         super.onCreate(savedInstanceState);
@@ -119,12 +138,28 @@ public class ScheduleActivity extends AppCompatActivity
             case (REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY): {
                 Log.d(TAG, "got result from Choose Group Activity");
                 if (resultCode == Activity.RESULT_OK) {
-                    localSchedule = (LocalSchedule) data.getSerializableExtra("localSchedule");
-                    saveLocalScheduleToFile();
+                    onLocalScheduleReturned(data);
                 }
                 break;
             }
         }
+    }
+
+    private void onLocalScheduleReturned(Intent data) {
+        localSchedule = (LocalSchedule) data.getSerializableExtra("localSchedule");
+
+        Log.d(TAG, "save local schedule to file");
+
+        FileIOUtils.saveObjectToFile(localSchedule, PATH_TO_LOCAL_SCHEDULE, this);
+        pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
+
+        //TODO the idea is that once in a period stats will be extracted from file, updated according
+        //     to attendence\miss of the pair and written back to the file.
+
+        Log.d(TAG, "save new stats to file");
+
+        Stats newStats = new Stats(new ArrayList<StatsDay>(), localSchedule.groupName);
+        FileIOUtils.saveObjectToFile(newStats, pathToStats, this);
     }
 
     @Override
@@ -137,7 +172,6 @@ public class ScheduleActivity extends AppCompatActivity
         }
     }
 
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -145,7 +179,10 @@ public class ScheduleActivity extends AppCompatActivity
         if (id == R.id.schedule) {
             //TODO переход на активити с расписаием
         } else if (id == R.id.stats) {
-            //TODO переход на активити со статистикой
+            //starting statistics activity
+            final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
+            intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -156,29 +193,5 @@ public class ScheduleActivity extends AppCompatActivity
     private boolean isLocalScheduleDownloaded() {
         File f = new File(getFilesDir(), PATH_TO_LOCAL_SCHEDULE);
         return f.exists();
-    }
-
-    private void saveLocalScheduleToFile() {
-        Log.d(TAG, "saving local schedule to file");
-        File f = new File(getFilesDir(), PATH_TO_LOCAL_SCHEDULE);
-        try {
-            //getting byte array from serializable localSchedule, then saving byte arr to file f
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutput out = null;
-
-            out = new ObjectOutputStream(bos);
-            out.writeObject(localSchedule);
-            out.flush();
-
-            FileOutputStream fout = new FileOutputStream(f);
-            fout.write(bos.toByteArray());
-
-            bos.close();
-        } catch (Exception e) {
-            Log.d(TAG, "exception when saving local schedule to file");
-            e.printStackTrace();
-            //noinspection ResultOfMethodCallIgnored
-            f.delete();
-        }
     }
 }
