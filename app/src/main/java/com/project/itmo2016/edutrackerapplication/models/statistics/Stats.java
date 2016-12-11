@@ -1,4 +1,4 @@
-package com.project.itmo2016.edutrackerapplication.models.Statistics;
+package com.project.itmo2016.edutrackerapplication.models.statistics;
 
 import android.support.annotation.NonNull;
 

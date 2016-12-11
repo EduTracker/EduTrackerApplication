@@ -1,4 +1,4 @@
-package com.project.itmo2016.edutrackerapplication.models.Schedule;
+package com.project.itmo2016.edutrackerapplication.models.schedule;
 
 import android.support.annotation.NonNull;
 

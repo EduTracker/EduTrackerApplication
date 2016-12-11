@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.project.itmo2016.edutrackerapplication.ChooseGroupActivity;
-import com.project.itmo2016.edutrackerapplication.models.Schedule.GlobalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.schedule.GlobalSchedule;
 import com.project.itmo2016.edutrackerapplication.utils.IOUtils;
 
 import java.io.IOException;

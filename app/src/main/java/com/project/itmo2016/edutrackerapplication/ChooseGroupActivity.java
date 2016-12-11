@@ -18,8 +18,8 @@ import com.project.itmo2016.edutrackerapplication.input.Input;
 import com.project.itmo2016.edutrackerapplication.loader.LoadResult;
 import com.project.itmo2016.edutrackerapplication.loader.ResultType;
 import com.project.itmo2016.edutrackerapplication.loader.ScheduleLoader;
-import com.project.itmo2016.edutrackerapplication.models.Schedule.GlobalSchedule;
-import com.project.itmo2016.edutrackerapplication.models.Schedule.LocalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.schedule.GlobalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
 
 public class ChooseGroupActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<LoadResult<GlobalSchedule>> {

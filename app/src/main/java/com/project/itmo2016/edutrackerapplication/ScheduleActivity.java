@@ -17,20 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-
-import com.project.itmo2016.edutrackerapplication.models.Schedule.LocalSchedule;
-import com.project.itmo2016.edutrackerapplication.models.Statistics.Stats;
-import com.project.itmo2016.edutrackerapplication.models.Statistics.StatsDay;
+import com.project.itmo2016.edutrackerapplication.loader.WeekRecycleAdapter;
+import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.statistics.Stats;
+import com.project.itmo2016.edutrackerapplication.models.statistics.StatsDay;
 import com.project.itmo2016.edutrackerapplication.utils.FileIOUtils;
 
-
-import com.project.itmo2016.edutrackerapplication.loader.WeekRecycleAdapter;
-
-import org.w3c.dom.Text;
-
-
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -49,21 +41,23 @@ public class ScheduleActivity extends AppCompatActivity
 
     private LocalSchedule localSchedule = null;
 
-
-    /**
-     * localSchedule and pathToStats are initialized here
-     */
-
     TextView error;
     RecyclerView recyclerView;
     WeekRecycleAdapter adapter = null;
 
 
+    /**
+     * localSchedule and pathToStats are initialized here
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
 
-        if (!isLocalScheduleDownloaded() || true) { //TODO true here only for debug
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_schedule);
+
+//        if (!isLocalScheduleDownloaded() || true) { //TODO true here only for debug
+        if (!isLocalScheduleDownloaded()) {
             Log.d(TAG, "localSchedule must be downloaded");
 
             startActivityForResult(new Intent(this, ChooseGroupActivity.class), REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY);
@@ -73,9 +67,6 @@ public class ScheduleActivity extends AppCompatActivity
             localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
             pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
         }
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_schedule);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -100,27 +91,18 @@ public class ScheduleActivity extends AppCompatActivity
 
         recyclerView = (RecyclerView) findViewById(R.id.scheduleRecycler);
         error = (TextView) findViewById(R.id.error_text);
-
-        displaySchedule(localSchedule);
     }
 
 
-    private void displaySchedule(LocalSchedule schedule) {
-        Log.d("Schedule", "Showing");
-        Log.d("Schedule", (schedule == null) + " " + (adapter == null));
-/*
-        TODO: Schedule is null. Need to be fixed.
+    private void displaySchedule() {
+//        Log.d("Schedule", "Showing");
+//        Log.d("Schedule", (schedule == null) + " " + (adapter == null));
 
- */
-
-        if (schedule == null) {
-            displayError();
-        }
         if (adapter == null) {
             adapter = new WeekRecycleAdapter(this);
             recyclerView.setAdapter(adapter);
         }
-        adapter.setSchedule(schedule);
+        adapter.setSchedule(localSchedule);
         error.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
     }
@@ -160,6 +142,8 @@ public class ScheduleActivity extends AppCompatActivity
 
         Stats newStats = new Stats(new ArrayList<StatsDay>(), localSchedule.groupName);
         FileIOUtils.saveObjectToFile(newStats, pathToStats, this);
+
+        displaySchedule();
     }
 
     @Override

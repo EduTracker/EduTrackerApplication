@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.project.itmo2016.edutrackerapplication.R;
-import com.project.itmo2016.edutrackerapplication.models.Day;
-import com.project.itmo2016.edutrackerapplication.models.LocalSchedule;
+import com.project.itmo2016.edutrackerapplication.models.schedule.Day;
+import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
 
 
 /**

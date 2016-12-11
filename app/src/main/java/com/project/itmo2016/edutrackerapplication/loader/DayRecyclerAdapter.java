@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.project.itmo2016.edutrackerapplication.R;
-import com.project.itmo2016.edutrackerapplication.models.Day;
-import com.project.itmo2016.edutrackerapplication.models.Lesson;
+import com.project.itmo2016.edutrackerapplication.models.schedule.Day;
+import com.project.itmo2016.edutrackerapplication.models.schedule.Lesson;
 
 
 public class DayRecyclerAdapter extends RecyclerView.Adapter<DayRecyclerAdapter.DayViewHolder> {

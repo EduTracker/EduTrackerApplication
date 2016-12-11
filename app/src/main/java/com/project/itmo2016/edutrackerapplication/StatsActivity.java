@@ -11,8 +11,8 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.project.itmo2016.edutrackerapplication.models.Statistics.Stats;
-import com.project.itmo2016.edutrackerapplication.models.Statistics.StatsDay;
+import com.project.itmo2016.edutrackerapplication.models.statistics.Stats;
+import com.project.itmo2016.edutrackerapplication.models.statistics.StatsDay;
 import com.project.itmo2016.edutrackerapplication.utils.FileIOUtils;
 import com.project.itmo2016.edutrackerapplication.utils.StatsUtils;
 
@@ -49,7 +49,7 @@ public class StatsActivity extends AppCompatActivity {
             for (int j = 0; j < numberOfPeriodsEachDay[i]; j++) {
                 arr.add((ThreadLocalRandom.current().nextInt(0, 2) == 0));
             }
-            Date date = new Date(2016, 12, i + 5); //starts with 5 december, which is mon
+            Date date = new Date(2016, 12, i + 12); //starts with 5 december, which is mon
             stats.attendanceHistory.add(new StatsDay(arr, date));
         }
     }
@@ -90,6 +90,8 @@ public class StatsActivity extends AppCompatActivity {
         int[] colors = new int[6];
 
         int numberOfDaysPassedInCurWeek = curDate.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY + 1; //inclusive
+        //todo tmp only to debug on sunday
+        numberOfDaysPassedInCurWeek++;
 
         for (int i = 0; i < numberOfDaysPassedInCurWeek; i++) {
             float xValue = (float) i;
