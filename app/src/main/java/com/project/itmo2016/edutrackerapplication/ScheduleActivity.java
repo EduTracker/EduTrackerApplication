@@ -10,12 +10,17 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.project.itmo2016.edutrackerapplication.loader.WeekRecycleAdapter;
 import com.project.itmo2016.edutrackerapplication.models.LocalSchedule;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,6 +39,10 @@ public class ScheduleActivity extends AppCompatActivity
     final String PATH_TO_LOCAL_SCHEDULE = "localSchedule.txt";
 
     LocalSchedule localSchedule = null;
+
+    TextView error;
+    RecyclerView recyclerView;
+    WeekRecycleAdapter adapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +78,38 @@ public class ScheduleActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        recyclerView = (RecyclerView) findViewById(R.id.scheduleRecycler);
+        error = (TextView) findViewById(R.id.error_text);
+
+        displaySchedule(localSchedule);
+    }
+
+
+    private void displaySchedule(LocalSchedule schedule) {
+        Log.d("Schedule", "Showing");
+        Log.d("Schedule", (schedule == null) + " " + (adapter == null));
+/*
+        TODO: Schedule is null. Need to be fixed.
+
+ */
+
+        if (schedule == null) {
+            displayError();
+        }
+        if (adapter == null) {
+            adapter = new WeekRecycleAdapter(this);
+            recyclerView.setAdapter(adapter);
+        }
+        adapter.setSchedule(schedule);
+        error.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void displayError() {
+        error.setText("Расписание недоступно");
+        error.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
     }
 
     @Override
