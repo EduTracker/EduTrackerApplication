@@ -14,9 +14,13 @@ public class Time implements Serializable {
     @NonNull
     public final int minute;
 
+    private static String convertToTime(int a) {
+        return String.valueOf(a / 10) + String.valueOf(a % 10);
+    }
+
     @Override
     public String toString() {
-        return Integer.toString(hour) + ":" + Integer.toString(minute);
+        return convertToTime(hour) + ":" + convertToTime(minute);
     }
 
     public Time(@NonNull int hour, @NonNull int minute) {

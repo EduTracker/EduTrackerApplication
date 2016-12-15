@@ -14,5 +14,6 @@
     <color name="attendance_grade_6">#9fec10</color>
     <color name="attendance_grade_7">#5ff00b</color>
     <color name="grey"> #dfe1de  </color>
+    <color name="gray_a">#aaa</color>
     <color name="black">#000000</color>
 </resources>

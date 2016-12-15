@@ -1,7 +1,9 @@
 package com.project.itmo2016.edutrackerapplication.loader;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import com.project.itmo2016.edutrackerapplication.R;
 import com.project.itmo2016.edutrackerapplication.models.schedule.Day;
+import com.project.itmo2016.edutrackerapplication.models.schedule.Lesson;
 import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
 
 
@@ -17,6 +20,13 @@ import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
  */
 
 public class WeekRecycleAdapter extends RecyclerView.Adapter<WeekRecycleAdapter.WeekViewHolder> {
+    private static final String[] WEEKDAY = new String[]{"Понедельник", "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота",
+            "Воскресенье"
+    };
     private final Context context;
     private final LayoutInflater layoutInflater;
 
@@ -30,18 +40,20 @@ public class WeekRecycleAdapter extends RecyclerView.Adapter<WeekRecycleAdapter.
 
     public void setSchedule(LocalSchedule week) {
         this.week = week;
+        Log.d("Adapter set schedule", week.facultyName + " " + week.groupName + " " + week.days.size());
         notifyDataSetChanged();
     }
 
     @Override
     public WeekViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d("View Create", "Launched");
         return WeekViewHolder.newInstance(layoutInflater, parent, context);
     }
 
     @Override
     public void onBindViewHolder(WeekViewHolder holder, int position) {
         Day day = week.days.get(position);
-        holder.dayName.setText(day.dayOfTheWeek);
+        holder.dayName.setText(WEEKDAY[day.dayOfTheWeek - 1]);
         holder.day.setDaySchedule(day);
     }
 
@@ -53,7 +65,7 @@ public class WeekRecycleAdapter extends RecyclerView.Adapter<WeekRecycleAdapter.
     static class WeekViewHolder extends RecyclerView.ViewHolder {
         final TextView dayName;
         final DayRecyclerAdapter day;
-        private final RecyclerView daysRecView;
+        final private RecyclerView daysRecView;
 
         WeekViewHolder(View itemView, Context context) {
             super(itemView);
@@ -61,6 +73,7 @@ public class WeekRecycleAdapter extends RecyclerView.Adapter<WeekRecycleAdapter.
             this.daysRecView = (RecyclerView) itemView.findViewById(R.id.single_day);
             day = new DayRecyclerAdapter(context);
             daysRecView.setAdapter(day);
+            daysRecView.setLayoutManager(new LinearLayoutManager(context));
         }
 
         static WeekViewHolder newInstance(LayoutInflater layoutInflater, ViewGroup parent, Context context) {

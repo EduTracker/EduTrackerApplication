@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
 import com.project.itmo2016.edutrackerapplication.models.statistics.Stats;
 import com.project.itmo2016.edutrackerapplication.models.statistics.StatsDay;
 import com.project.itmo2016.edutrackerapplication.utils.FileIOUtils;
+import com.project.itmo2016.edutrackerapplication.utils.RecylcerDividersDecorator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -90,14 +93,18 @@ public class ScheduleActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.scheduleRecycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(
+                new RecylcerDividersDecorator(ContextCompat.getColor(this, R.color.gray_a)));
+
         error = (TextView) findViewById(R.id.error_text);
+        displaySchedule(localSchedule);
     }
 
 
-    private void displaySchedule() {
-//        Log.d("Schedule", "Showing");
-//        Log.d("Schedule", (schedule == null) + " " + (adapter == null));
-
+    private void displaySchedule(LocalSchedule localSchedule) {
+        assert localSchedule != null;
+        Log.d("Trying to display", String.valueOf(localSchedule.days.size()));
         if (adapter == null) {
             adapter = new WeekRecycleAdapter(this);
             recyclerView.setAdapter(adapter);
@@ -105,6 +112,8 @@ public class ScheduleActivity extends AppCompatActivity
         adapter.setSchedule(localSchedule);
         error.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
+        Log.d("adapter size", String.valueOf(adapter.getItemCount()));
+//        displayError();
     }
 
     private void displayError() {
@@ -143,7 +152,7 @@ public class ScheduleActivity extends AppCompatActivity
         Stats newStats = new Stats(new ArrayList<StatsDay>(), localSchedule.groupName);
         FileIOUtils.saveObjectToFile(newStats, pathToStats, this);
 
-        displaySchedule();
+        displaySchedule(localSchedule);
     }
 
     @Override
