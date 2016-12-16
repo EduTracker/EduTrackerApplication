@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.project.itmo2016.edutrackerapplication.models.statistics.Stats;
 import com.project.itmo2016.edutrackerapplication.models.statistics.StatsDay;
@@ -160,10 +162,6 @@ public class StatsActivity extends AppCompatActivity {
             setupBarChartMonth(period);
         } else setupBarChartWeek(period);
 
-        //chart background is not white
-        barChart.setDrawGridBackground(true);
-        barChart.setGridBackgroundColor(ContextCompat.getColor(this, R.color.grey));
-
         //disabling chart description
         Description descr = new Description();
         descr.setEnabled(false);
@@ -176,7 +174,7 @@ public class StatsActivity extends AppCompatActivity {
         //disabling background grid
         barChart.getXAxis().setDrawGridLines(false);
         barChart.getAxisLeft().setDrawGridLines(false);
-        barChart.getAxisRight().setDrawGridLines(false);
+//        barChart.getAxisRight().setDrawGridLines(false);
 
         //working with legend. It is set of colors below a chart
         Legend legend = barChart.getLegend();
@@ -190,14 +188,23 @@ public class StatsActivity extends AppCompatActivity {
         xaxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         YAxis yLAxis = barChart.getAxisLeft();
         YAxis yRAxis = barChart.getAxisRight();
-        yLAxis.setAxisMaximum(1.5f);
+        yLAxis.setAxisMaximum(1.4f);
         yLAxis.setAxisMinimum(0.0f);
+        yLAxis.setLabelCount(4);
         yLAxis.setDrawZeroLine(true);
         yRAxis.setDrawLabels(false);
+        yLAxis.setGranularityEnabled(true);
+        yLAxis.setGranularity(0.25f);
 
-        //TODO y axis customization needed
+        yLAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return Float.toString(value / 1.2f);
+            }
+        });
 
         barChart.setScaleEnabled(false);
+        barChart.setTouchEnabled(false);
 
         //updating chart
         barChart.invalidate();
@@ -289,7 +296,7 @@ public class StatsActivity extends AppCompatActivity {
                     && stats.attendanceHistory.get(i).date.get(Calendar.WEEK_OF_YEAR) == period.get(Calendar.WEEK_OF_YEAR) && !isMonth
                     || stats.attendanceHistory.get(i).date.get(Calendar.YEAR) == period.get(Calendar.YEAR)
                     && stats.attendanceHistory.get(i).date.get(Calendar.MONTH) == period.get(Calendar.MONTH) && isMonth) {
-                float xValue = (float) getIndex(i, isMonth); //mon is 0
+                float xValue = (float) getIndex(i, isMonth) + 1; //mon is 1
                 float yValue = getYValue(stats.attendanceHistory.get(i).lessons);
 
                 noData = false;
@@ -304,12 +311,10 @@ public class StatsActivity extends AppCompatActivity {
 
         for (int i = 0; i < length; i++) { //fill chart up to full length with zeroes
             if (!filled[i]) {
-                float xValue = (float) i;
+                float xValue = (float) i + 1;
                 float yValue = 0.0f;
                 //entries when no periods are not shifted -- no bars will be shown
                 entries.set(i, new BarEntry(xValue, yValue));
-
-                colors[i] = ContextCompat.getColor(this, R.color.grey); //color here just for fun. No bars are shown
 
                 Log.d(TAG, Integer.toString(i) + "th entry: " + Float.toString(xValue) + " " + Float.toString(yValue));
             }

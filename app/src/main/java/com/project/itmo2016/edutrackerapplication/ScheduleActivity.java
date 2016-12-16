@@ -87,6 +87,7 @@ public class ScheduleActivity extends AppCompatActivity
                 new RecylcerDividersDecorator(ContextCompat.getColor(this, R.color.gray_a)));
 
         error = (TextView) findViewById(R.id.error_text);
+        error.setVisibility(View.VISIBLE);
 
 //        if (!isLocalScheduleDownloaded() || true) { //TODO true here only for debug
         if (!isLocalScheduleDownloaded()) {
@@ -102,7 +103,6 @@ public class ScheduleActivity extends AppCompatActivity
         }
     }
 
-
     private void displaySchedule(LocalSchedule localSchedule) {
         assert localSchedule != null;
         Log.d("Trying to display", String.valueOf(localSchedule.days.size()));
@@ -114,13 +114,6 @@ public class ScheduleActivity extends AppCompatActivity
         error.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         Log.d("adapter size", String.valueOf(adapter.getItemCount()));
-//        displayError();
-    }
-
-    private void displayError() {
-        error.setText("Расписание недоступно");
-        error.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -153,6 +146,7 @@ public class ScheduleActivity extends AppCompatActivity
         Stats newStats = new Stats(new ArrayList<StatsDay>(), localSchedule.groupName);
         FileIOUtils.saveObjectToFile(newStats, pathToStats, this);
 
+        error.setVisibility(View.GONE);
         displaySchedule(localSchedule);
     }
 
@@ -170,9 +164,7 @@ public class ScheduleActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.schedule) {
-            //TODO переход на активити с расписаием
-        } else if (id == R.id.stats) {
+        if (id == R.id.stats) {
             //starting statistics activity
             final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
             intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
