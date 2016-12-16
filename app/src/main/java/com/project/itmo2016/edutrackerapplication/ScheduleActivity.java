@@ -59,17 +59,6 @@ public class ScheduleActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_schedule);
 
-//        if (!isLocalScheduleDownloaded() || true) { //TODO true here only for debug
-        if (!isLocalScheduleDownloaded()) {
-            Log.d(TAG, "localSchedule must be downloaded");
-
-            startActivityForResult(new Intent(this, ChooseGroupActivity.class), REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY);
-        } else {
-            Log.d(TAG, "localSchedule was already downloaded, loading it from file");
-
-            localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
-            pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
-        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -98,7 +87,19 @@ public class ScheduleActivity extends AppCompatActivity
                 new RecylcerDividersDecorator(ContextCompat.getColor(this, R.color.gray_a)));
 
         error = (TextView) findViewById(R.id.error_text);
-        displaySchedule(localSchedule);
+
+//        if (!isLocalScheduleDownloaded() || true) { //TODO true here only for debug
+        if (!isLocalScheduleDownloaded()) {
+            Log.d(TAG, "localSchedule must be downloaded");
+
+            startActivityForResult(new Intent(this, ChooseGroupActivity.class), REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY);
+        } else {
+            Log.d(TAG, "localSchedule was already downloaded, loading it from file");
+
+            localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
+            pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
+            displaySchedule(localSchedule);
+        }
     }
 
 
