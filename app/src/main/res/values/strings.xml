@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EduTrackerApplication</string>
+    <string name="app_name">EduTracker</string>
     <!--strings for choose group activity-->
     <string name="initial_group_chooser">Enter your group name in ITMO University:</string>
     <string name="error_group_chooser">The name of group is invalid, ensure you\'re using English letters only</string>
@@ -21,4 +21,5 @@
     <string name="previous">&lt;</string>
     <string name="next">&gt;</string>
     <string name="text_below_chart">Chart displays percentage of visited periods</string>
+    <string name="itmo_university">ITMO University</string>
 </resources>
