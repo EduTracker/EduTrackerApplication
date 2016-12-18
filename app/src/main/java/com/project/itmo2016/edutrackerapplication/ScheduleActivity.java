@@ -3,6 +3,7 @@ package com.project.itmo2016.edutrackerapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -61,16 +62,6 @@ public class ScheduleActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "По нажатию этой кнопки можно будет поделиться статистикой VK"
-                        , Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -161,13 +152,18 @@ public class ScheduleActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.stats) {
             //starting statistics activity
             final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
             intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
+            startActivity(intent);
+        }
+
+        if (id == R.id.schedule) {
+            final Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
             startActivity(intent);
         }
 
