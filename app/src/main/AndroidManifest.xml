@@ -22,8 +22,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ChooseGroupActivity"></activity>
-        <activity android:name=".StatsActivity"></activity>
+        <activity android:name=".ChooseGroupActivity" />
+        <activity android:name=".StatsActivity" />
 
     </application>
 

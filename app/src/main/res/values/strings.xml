@@ -22,4 +22,5 @@
     <string name="next">&gt;</string>
     <string name="text_below_chart">Chart displays percentage of visited periods</string>
     <string name="itmo_university">ITMO University</string>
+    <string name="switch_btn">Switch</string>
 </resources>

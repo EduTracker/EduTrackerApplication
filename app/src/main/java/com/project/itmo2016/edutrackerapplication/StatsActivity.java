@@ -41,8 +41,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by Aleksandr Tukallo on 07.12.16.
  */
 
-public class StatsActivity extends AppCompatActivity
-        /*implements NavigationView.OnNavigationItemSelectedListener*/ {
+public class StatsActivity extends AppCompatActivity {
 
     Stats stats;
 
@@ -103,7 +102,6 @@ public class StatsActivity extends AppCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main_stats);
         setContentView(R.layout.activity_stats);
 
         //initializing stats
@@ -345,25 +343,4 @@ public class StatsActivity extends AppCompatActivity
         }
         return (float) counter / (float) arr.size() + shiftUpwards;
     }
-
-    /*@Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.stats) {
-            //starting statistics activity
-            final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
-//            intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
-            startActivity(intent);
-        }
-
-        if (id == R.id.schedule) {
-            final Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }*/
 }

@@ -162,11 +162,6 @@ public class ScheduleActivity extends AppCompatActivity
             startActivity(intent);
         }
 
-        if (id == R.id.schedule) {
-            final Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
-            startActivity(intent);
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
