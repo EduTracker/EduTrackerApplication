@@ -11,20 +11,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/previous"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center"
+            android:background="@drawable/backdround"
             android:text="@string/previous" />
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="6">
+            android:layout_weight="5">
 
             <TextView
                 android:id="@+id/header_stats_text"
@@ -37,8 +39,10 @@
         <Button
             android:id="@+id/next"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center"
+            android:background="@drawable/backdround"
             android:text="@string/next" />
 
     </LinearLayout>
@@ -48,24 +52,24 @@
         android:layout_height="0dp"
         android:layout_weight="7">
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/bar_chart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <TextView
             android:id="@+id/error_no_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </FrameLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
         <TextView
@@ -78,7 +82,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Switch"
+            android:text="@string/switch_button"
+            android:background="@drawable/backdround"
             android:id="@+id/switch_button"/>
 
     </LinearLayout>

@@ -1,14 +1,14 @@
 package com.project.itmo2016.edutrackerapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +24,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.project.itmo2016.edutrackerapplication.models.statistics.Stats;
 import com.project.itmo2016.edutrackerapplication.models.statistics.StatsDay;
 import com.project.itmo2016.edutrackerapplication.utils.FileIOUtils;
@@ -41,7 +40,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by Aleksandr Tukallo on 07.12.16.
  */
 
-public class StatsActivity extends AppCompatActivity {
+public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
 
     Stats stats;
 
@@ -102,7 +101,11 @@ public class StatsActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
+//        setContentView(R.layout.activity_stats);
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(R.layout.activity_stats, null, false);
+        drawer.addView(contentView, 0);
 
         //initializing stats
         stats = FileIOUtils.loadSerializableFromFile(getIntent().getExtras().getString(ScheduleActivity.EXTRA_PATH_TO_STATS), this);
@@ -161,6 +164,27 @@ public class StatsActivity extends AppCompatActivity {
 
         //displaying barChart
         setupBarChart(new GregorianCalendar(), false);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+       /* if (id == R.id.stats) {
+            //starting statistics activity
+            final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
+            intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
+            startActivity(intent);
+        }*/
+
+        if (id == R.id.schedule) {
+            final Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
+            startActivity(intent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private void setupBarChart(final GregorianCalendar period, boolean isMonth) {

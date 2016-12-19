@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
     <color name="background_gray">#A7A2A1</color>
 
     <!--Colors for bar chart-->
@@ -15,4 +15,5 @@
     <color name="attendance_grade_7">#5ff00b</color>
     <color name="gray_a">#aaa</color>
     <color name="black">#000000</color>
+    <color name="status_bar">#4caf50</color>
 </resources>

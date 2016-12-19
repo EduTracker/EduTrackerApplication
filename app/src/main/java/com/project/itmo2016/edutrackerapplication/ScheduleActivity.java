@@ -1,21 +1,17 @@
 package com.project.itmo2016.edutrackerapplication;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -33,8 +29,7 @@ import java.util.ArrayList;
 /**
  * Created by Aleksandr Tukallo on 30.11.16.
  */
-public class ScheduleActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class ScheduleActivity extends Drawer {
 
     private static final int REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY = 1;
     public static final String TAG = "ScheduleActivity tag";
@@ -49,7 +44,6 @@ public class ScheduleActivity extends AppCompatActivity
     RecyclerView recyclerView;
     WeekRecycleAdapter adapter = null;
 
-
     /**
      * localSchedule and pathToStats are initialized here
      */
@@ -58,19 +52,10 @@ public class ScheduleActivity extends AppCompatActivity
         Log.d(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_schedule);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+//        setContentView(R.layout.drawer);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(R.layout.activity_schedule, null, false);
+        drawer.addView(contentView ,0);
 
         recyclerView = (RecyclerView) findViewById(R.id.scheduleRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -92,6 +77,28 @@ public class ScheduleActivity extends AppCompatActivity
             pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
             displaySchedule(localSchedule);
         }
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.stats) {
+            //starting statistics activity
+            final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
+            intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
+            startActivity(intent);
+        }
+
+        /*if (id == R.id.schedule) {
+            final Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
+            startActivity(intent);
+        }*/
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private void displaySchedule(LocalSchedule localSchedule) {
@@ -149,22 +156,6 @@ public class ScheduleActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.stats) {
-            //starting statistics activity
-            final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
-            intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     private boolean isLocalScheduleDownloaded() {
