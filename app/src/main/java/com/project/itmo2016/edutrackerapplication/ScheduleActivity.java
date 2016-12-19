@@ -26,9 +26,6 @@ import com.project.itmo2016.edutrackerapplication.utils.RecylcerDividersDecorato
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by Aleksandr Tukallo on 30.11.16.
- */
 public class ScheduleActivity extends Drawer {
 
     private static final int REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY = 1;
@@ -37,6 +34,13 @@ public class ScheduleActivity extends Drawer {
     private static final String BASE_FOR_PATH_TO_STATS = "stats";
     public static final String EXTRA_PATH_TO_STATS = "extraPathToStats";
     private String pathToStats; // = base + groupName
+
+    private final int NUMBEROFDAYSINWEEK = 7;
+    private final int MAXPAIRSAMOUNTPERDAY = 10;
+
+    private ArrayList<ArrayList<Boolean>> checkboxData; // checkboxData[weekDay = {0..6}][{pairNumber = {0, ?9}] = true
+                                                        // if lesson pairNumberth lesson on {"Monday", .., "Sunday"}.get(weekDay) was attended
+                                                        // false - otherwise.
 
     private LocalSchedule localSchedule = null;
 
@@ -65,7 +69,20 @@ public class ScheduleActivity extends Drawer {
         error = (TextView) findViewById(R.id.error_text);
         error.setVisibility(View.VISIBLE);
 
-//        if (!isLocalScheduleDownloaded() || true) { //TODO true here only for debug
+//      TODO: Need to store checkboxData in DataBase.
+/*          if (checkboxData is in DataBase)
+            // TODO: Get checkboxData from DataBase.
+        else
+ */
+        checkboxData = new ArrayList<>();
+        for (int i = 0; i < NUMBEROFDAYSINWEEK; i++) {
+            checkboxData.add(new ArrayList<Boolean>());
+            for (int j = 0; j < MAXPAIRSAMOUNTPERDAY; j++) {
+                checkboxData.get(i).add(false);
+            }
+        }
+
+//        if (!isLocalScheduleDownloaded() || true) { //true here only for debug
         if (!isLocalScheduleDownloaded()) {
             Log.d(TAG, "localSchedule must be downloaded");
 
@@ -74,10 +91,12 @@ public class ScheduleActivity extends Drawer {
             Log.d(TAG, "localSchedule was already downloaded, loading it from file");
 
             localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
+            assert localSchedule != null;
             pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
             displaySchedule(localSchedule);
         }
     }
+
 
 
     @Override
@@ -105,7 +124,7 @@ public class ScheduleActivity extends Drawer {
         assert localSchedule != null;
         Log.d("Trying to display", String.valueOf(localSchedule.days.size()));
         if (adapter == null) {
-            adapter = new WeekRecycleAdapter(this);
+            adapter = new WeekRecycleAdapter(this, checkboxData);
             recyclerView.setAdapter(adapter);
         }
         adapter.setSchedule(localSchedule);
