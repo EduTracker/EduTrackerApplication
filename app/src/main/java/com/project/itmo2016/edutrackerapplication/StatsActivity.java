@@ -63,14 +63,14 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
     boolean isMonthDisplayed; //Current chart mode: 0 is week, 1 is month
     GregorianCalendar timePeriodInChart;
 
-    //TODO delete function when debug finished
-    //fills stats with random values from october to yesterday
+    //should delete function when debug finished
+    //fills stats with random values from october to december, 3rd week
     private void fillStatsRandomlyForDebug() {
-        int[] numberOfPeriodsEachDay = {5, 0, 2, 6, 1, 2};
+        int[] numberOfPeriodsEachDay = {4, 5, 5, 4, 4, 4};
 
-        GregorianCalendar dateToFillFrom = new GregorianCalendar(2016, Calendar.OCTOBER, 1);
+        GregorianCalendar dateToFillFrom = new GregorianCalendar(2016, Calendar.AUGUST, 1);
+        GregorianCalendar rightNow = new GregorianCalendar(2016, Calendar.DECEMBER, 19);
 
-        GregorianCalendar rightNow = new GregorianCalendar();
         if (rightNow.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) //sundays sre never in statistics
             rightNow.add(Calendar.DAY_OF_WEEK, -1);
 
@@ -93,8 +93,6 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
         }
     }
 
-    //TODO add navbar to this activity
-
     /**
      * This method initializes stats.
      */
@@ -109,8 +107,8 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
 
         //initializing stats
         stats = FileIOUtils.loadSerializableFromFile(getIntent().getExtras().getString(ScheduleActivity.EXTRA_PATH_TO_STATS), this);
+        fillStatsRandomlyForDebug(); //TODO tmp only, to show cool charts
 
-        fillStatsRandomlyForDebug(); //TODO tmp only
         if (stats == null) {
             Log.d(TAG, "unable to load stats from file!!! exiting activity");
             finish();
@@ -365,6 +363,7 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
             if (arr.get(i))
                 counter++;
         }
+        if(arr.size() == 0) return 0;
         return (float) counter / (float) arr.size() + shiftUpwards;
     }
 }

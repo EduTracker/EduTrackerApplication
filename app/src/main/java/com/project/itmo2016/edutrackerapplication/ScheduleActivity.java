@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -25,22 +26,29 @@ import com.project.itmo2016.edutrackerapplication.utils.RecylcerDividersDecorato
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class ScheduleActivity extends Drawer {
 
     private static final int REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY = 1;
     public static final String TAG = "ScheduleActivity tag";
     private static final String PATH_TO_LOCAL_SCHEDULE = "localSchedule";
+    private static final String PATH_TO_LATEST_DATE = "latestEnter";
     private static final String BASE_FOR_PATH_TO_STATS = "stats";
     public static final String EXTRA_PATH_TO_STATS = "extraPathToStats";
     private String pathToStats; // = base + groupName
 
-    private final int NUMBEROFDAYSINWEEK = 7;
-    private final int MAXPAIRSAMOUNTPERDAY = 10;
+    private static final String[] KEYS_CHECKBOXES = new String[]{"mon", "tue", "wdn", "thr", "fri", "sat"};
+
+    private final int NUMBER_OF_DAYS_IN_WEEK = 7;
+    private final int MAX_PAIRS_AMOUNT_PER_DAY = 10;
 
     private ArrayList<ArrayList<Boolean>> checkboxData; // checkboxData[weekDay = {0..6}][{pairNumber = {0, ?9}] = true
-                                                        // if lesson pairNumberth lesson on {"Monday", .., "Sunday"}.get(weekDay) was attended
-                                                        // false - otherwise.
+    // if lesson pairNumberth lesson on {"Monday", .., "Sunday"}.get(weekDay) was attended
+    // false - otherwise.
+
+    GregorianCalendar latestEnter;
 
     private LocalSchedule localSchedule = null;
 
@@ -56,10 +64,9 @@ public class ScheduleActivity extends Drawer {
         Log.d(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.drawer);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_schedule, null, false);
-        drawer.addView(contentView ,0);
+        drawer.addView(contentView, 0);
 
         recyclerView = (RecyclerView) findViewById(R.id.scheduleRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -69,35 +76,119 @@ public class ScheduleActivity extends Drawer {
         error = (TextView) findViewById(R.id.error_text);
         error.setVisibility(View.VISIBLE);
 
-//      TODO: Need to store checkboxData in DataBase.
-/*          if (checkboxData is in DataBase)
-            // TODO: Get checkboxData from DataBase.
-        else
- */
         checkboxData = new ArrayList<>();
-        for (int i = 0; i < NUMBEROFDAYSINWEEK; i++) {
+        for (int i = 0; i < NUMBER_OF_DAYS_IN_WEEK; i++) {
             checkboxData.add(new ArrayList<Boolean>());
-            for (int j = 0; j < MAXPAIRSAMOUNTPERDAY; j++) {
+            for (int j = 0; j < MAX_PAIRS_AMOUNT_PER_DAY; j++) {
                 checkboxData.get(i).add(false);
             }
         }
 
-//        if (!isLocalScheduleDownloaded() || true) { //true here only for debug
-        if (!isLocalScheduleDownloaded()) {
+        //Loading schedule from another activity if needed
+//        if (true) { //true here only for debug
+        if (!isFileCreated(PATH_TO_LOCAL_SCHEDULE)) {
             Log.d(TAG, "localSchedule must be downloaded");
 
             startActivityForResult(new Intent(this, ChooseGroupActivity.class), REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY);
         } else {
             Log.d(TAG, "localSchedule was already downloaded, loading it from file");
 
+//            if (savedInstanceState != null)
+//                loadCheckboxesFromSavedState(savedInstanceState);
+
             localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
             assert localSchedule != null;
             pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
             displaySchedule(localSchedule);
+
+            //If app was opened last time more than a week ago, checkboxes must be saved to stats and turned to false
+            latestEnter = FileIOUtils.loadSerializableFromFile(PATH_TO_LATEST_DATE, this);
+            FileIOUtils.saveObjectToFile(new GregorianCalendar(), PATH_TO_LATEST_DATE, this);
+            saveCheckBoxesToStats(latestEnter);
         }
+
     }
 
+    //gets where Monday is 2, returns, where Monday is 0
+    private int convertDayFromCalendar(int day) {
+        assert day != 1; //never working with sunday
+        if (day == 0) return 5;
+        return day - 2;
+    }
 
+    //weekday: Monday is №2 (same as GregorianCalendar)
+    ArrayList<Boolean> getArrOfAttendance(int weekDay) {
+
+        for (int i = 0; i < localSchedule.days.size(); i++) {
+            if (localSchedule.days.get(i).dayOfTheWeek == convertDayFromCalendar(weekDay) + 1) {
+                ArrayList<Boolean> ret = new ArrayList<>();
+
+                for (int j = 0; j < localSchedule.days.get(i).lessons.size(); j++) {
+                    ret.add(checkboxData.get(convertDayFromCalendar(weekDay)).get(j));
+                }
+
+                return ret;
+            }
+        }
+
+
+        return new ArrayList<Boolean>(); //if not found, 0 periods in that day, empty array
+    }
+
+    //moves date to MONDAY of this week
+    private void goToFirstDayOfTheWeek(GregorianCalendar date) {
+        while (date.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY)
+            date.add(Calendar.DAY_OF_WEEK, -1);
+    }
+
+    private void saveCheckBoxesToStats(GregorianCalendar date) {
+        Stats stats = FileIOUtils.loadSerializableFromFile(pathToStats, this);
+
+        if (date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+            date.add(Calendar.DAY_OF_WEEK, -1);
+
+        boolean found = false; //if one day is found, all days of the week before date are found.
+        for (int i = 0; i < stats.attendanceHistory.size(); i++) {
+            if (stats.attendanceHistory.get(i).date.get(Calendar.WEEK_OF_YEAR) == date.get(Calendar.WEEK_OF_YEAR)
+                    && stats.attendanceHistory.get(i).date.get(Calendar.YEAR) == date.get(Calendar.YEAR)
+                    && stats.attendanceHistory.get(i).date.get(Calendar.DAY_OF_WEEK) <= date.get(Calendar.DAY_OF_WEEK)) { //todo what about !=
+                found = true;
+                stats.attendanceHistory.set(i,
+                        new StatsDay(getArrOfAttendance(stats.attendanceHistory.get(i).date.get(Calendar.DAY_OF_WEEK)),
+                                stats.attendanceHistory.get(i).date)); //arr upd according to checkboxes
+            }
+        }
+
+        if (!found) {
+            GregorianCalendar curDate = new GregorianCalendar();
+            goToFirstDayOfTheWeek(curDate);
+
+            date.add(Calendar.DAY_OF_WEEK, 1); //for inclusive cycle with !=
+
+            while (curDate.get(Calendar.DAY_OF_WEEK) != date.get(Calendar.DAY_OF_WEEK)) {
+                stats.attendanceHistory.add(
+                        new StatsDay(getArrOfAttendance(curDate.get(Calendar.DAY_OF_WEEK)),
+                                new GregorianCalendar(curDate.get(Calendar.YEAR),
+                                        curDate.get(Calendar.MONTH),
+                                        curDate.get(Calendar.DATE))));
+                curDate.add(Calendar.DAY_OF_WEEK, 1);
+            }
+            //fill with empty arrs till end of the week:
+
+            while (curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) { //till Sunday
+                stats.attendanceHistory.add(
+                        new StatsDay(new ArrayList<Boolean>(),
+                                new GregorianCalendar(curDate.get(Calendar.YEAR),
+                                        curDate.get(Calendar.MONTH),
+                                        curDate.get(Calendar.DATE))));
+                curDate.add(Calendar.DAY_OF_WEEK, 1);
+            }
+        }
+        //saving changed file back
+        FileIOUtils.saveObjectToFile(stats, pathToStats, this);
+
+        Log.d(TAG, "Checkboxes updated");
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -105,15 +196,14 @@ public class ScheduleActivity extends Drawer {
 
         if (id == R.id.stats) {
             //starting statistics activity
+
+            saveCheckBoxesToStats(new GregorianCalendar());
+
             final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
             intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
             startActivity(intent);
         }
 
-        /*if (id == R.id.schedule) {
-            final Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
-            startActivity(intent);
-        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -155,13 +245,13 @@ public class ScheduleActivity extends Drawer {
         FileIOUtils.saveObjectToFile(localSchedule, PATH_TO_LOCAL_SCHEDULE, this);
         pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
 
-        //TODO the idea is that once in a period stats will be extracted from file, updated according
-        //     to attendence\miss of the pair and written back to the file.
-
         Log.d(TAG, "save new stats to file");
 
         Stats newStats = new Stats(new ArrayList<StatsDay>(), localSchedule.groupName);
         FileIOUtils.saveObjectToFile(newStats, pathToStats, this);
+
+        latestEnter = new GregorianCalendar();
+        FileIOUtils.saveObjectToFile(latestEnter, PATH_TO_LATEST_DATE, this);
 
         error.setVisibility(View.GONE);
         displaySchedule(localSchedule);
@@ -177,8 +267,31 @@ public class ScheduleActivity extends Drawer {
         }
     }
 
-    private boolean isLocalScheduleDownloaded() {
-        File f = new File(getFilesDir(), PATH_TO_LOCAL_SCHEDULE);
+    private boolean isFileCreated(String PATH) {
+        File f = new File(getFilesDir(), PATH);
         return f.exists();
     }
+
+    //TODO: save checkboxes!!
+//    @Override
+//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+//        super.onSaveInstanceState(outState, outPersistentState);
+//
+//        for (int i = 0; i < KEYS_CHECKBOXES.length; i++) {
+//            boolean[] arr = new boolean[checkboxData.get(i).size()];
+//            for (int j = 0; j < checkboxData.get(i).size(); j++)
+//                arr[i] = checkboxData.get(i).get(j);
+//
+//            outState.putBooleanArray(KEYS_CHECKBOXES[i], arr);
+//        }
+//    }
+//
+//    private void loadCheckboxesFromSavedState(Bundle savedInstanceState) {
+//        for (int i = 0; i < KEYS_CHECKBOXES.length; i++) {
+//            checkboxData.set(i, new ArrayList<Boolean>());
+//            boolean[] arr = savedInstanceState.getBooleanArray(KEYS_CHECKBOXES[i]);
+//            for (int j = 0; j < arr.length; j++)
+//                checkboxData.get(i).set(j, arr[j]);
+//        }
+//    }
 }

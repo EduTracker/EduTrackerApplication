@@ -121,6 +121,12 @@ public class ChooseGroupActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        onSaveInstanceState(new Bundle());
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         outState.putString(KEY_EDIT_TEXT, enterField.getText().toString());
         super.onSaveInstanceState(outState, outPersistentState);
