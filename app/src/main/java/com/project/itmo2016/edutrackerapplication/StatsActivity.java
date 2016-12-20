@@ -207,17 +207,30 @@ public class StatsActivity extends Drawer {
         else
             xaxis.setLabelCount(6);
         xaxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
         YAxis yLAxis = barChart.getAxisLeft();
-        YAxis yRAxis = barChart.getAxisRight();
         yLAxis.setAxisMaximum(1.4f);
         yLAxis.setAxisMinimum(0.0f);
         yLAxis.setLabelCount(4);
         yLAxis.setDrawZeroLine(true);
-        yRAxis.setDrawLabels(false);
         yLAxis.setGranularityEnabled(true);
         yLAxis.setGranularity(0.25f);
 
+        YAxis yRAxis = barChart.getAxisRight();
+        yRAxis.setAxisMaximum(1.4f);
+        yRAxis.setAxisMinimum(0.0f);
+        yRAxis.setLabelCount(4);
+        yRAxis.setDrawZeroLine(true);
+        yRAxis.setGranularityEnabled(true);
+        yRAxis.setGranularity(0.25f);
+
         yLAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return Float.toString(value / 1.2f);
+            }
+        });
+        yRAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 return Float.toString(value / 1.2f);
