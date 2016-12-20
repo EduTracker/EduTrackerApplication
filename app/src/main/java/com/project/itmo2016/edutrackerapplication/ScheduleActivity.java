@@ -181,6 +181,7 @@ public class ScheduleActivity extends Drawer {
         Log.d(TAG, "Checkboxes updated");
     }
 
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
