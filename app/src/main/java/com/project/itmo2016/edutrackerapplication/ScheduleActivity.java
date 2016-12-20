@@ -56,7 +56,6 @@ public class ScheduleActivity extends Drawer {
         Log.d(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.drawer);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_schedule, null, false);
         drawer.addView(contentView ,0);
@@ -96,8 +95,6 @@ public class ScheduleActivity extends Drawer {
             displaySchedule(localSchedule);
         }
     }
-
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -165,16 +162,6 @@ public class ScheduleActivity extends Drawer {
 
         error.setVisibility(View.GONE);
         displaySchedule(localSchedule);
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     private boolean isLocalScheduleDownloaded() {

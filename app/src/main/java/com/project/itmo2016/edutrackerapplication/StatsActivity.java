@@ -93,15 +93,12 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
         }
     }
 
-    //TODO add navbar to this activity
-
     /**
      * This method initializes stats.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_stats);
 
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_stats, null, false);
@@ -169,13 +166,6 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
-       /* if (id == R.id.stats) {
-            //starting statistics activity
-            final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
-            intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
-            startActivity(intent);
-        }*/
 
         if (id == R.id.schedule) {
             final Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);

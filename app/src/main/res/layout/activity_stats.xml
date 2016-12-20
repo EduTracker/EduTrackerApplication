@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -20,8 +21,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
-            android:background="@drawable/backdround"
-            android:text="@string/previous" />
+            android:background="@drawable/background"
+            android:text="@string/previous"
+            tools:ignore="NestedWeights" />
 
         <FrameLayout
             android:layout_width="0dp"
@@ -42,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
-            android:background="@drawable/backdround"
+            android:background="@drawable/background"
             android:text="@string/next" />
 
     </LinearLayout>
@@ -76,14 +78,15 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:text="@string/text_below_chart" />
+            android:text="@string/text_below_chart"
+            tools:ignore="NestedWeights" />
 
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/switch_button"
-            android:background="@drawable/backdround"
+            android:background="@drawable/background"
             android:id="@+id/switch_button"/>
 
     </LinearLayout>
