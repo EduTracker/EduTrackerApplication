@@ -40,7 +40,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by Aleksandr Tukallo on 07.12.16.
  */
 
-public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
+public class StatsActivity extends Drawer {
 
     Stats stats;
 
@@ -59,12 +59,13 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
     Button prev;
     Button switchButton;
 
-    boolean noData;
     boolean isMonthDisplayed; //Current chart mode: 0 is week, 1 is month
     GregorianCalendar timePeriodInChart;
 
-    //should delete function when debug finished
-    //fills stats with random values from october to december, 3rd week
+    /**
+     * Method needed for debug only.
+     * Fills stats with random values from october to 3rd week of december
+     */
     private void fillStatsRandomlyForDebug() {
         int[] numberOfPeriodsEachDay = {4, 5, 5, 4, 4, 4};
 
@@ -99,7 +100,6 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_stats);
 
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_stats, null, false);
@@ -126,10 +126,10 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
             public void onClick(View view) {
                 if (isMonthDisplayed) {
                     isMonthDisplayed = false;
-                    setupBarChart(timePeriodInChart, false);
+                    setupBarChart(StatsUtils.ensureNotSunday(timePeriodInChart), false);
                 } else {
                     isMonthDisplayed = true;
-                    setupBarChart(timePeriodInChart, true);
+                    setupBarChart(StatsUtils.ensureNotSunday(timePeriodInChart), true);
                 }
             }
         });
@@ -139,10 +139,10 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
             public void onClick(View view) {
                 if (isMonthDisplayed) {
                     timePeriodInChart.add(Calendar.MONTH, 1);
-                    setupBarChart(timePeriodInChart, true);
+                    setupBarChart(StatsUtils.ensureNotSunday(timePeriodInChart), true);
                 } else {
                     timePeriodInChart.add(Calendar.DATE, 7);
-                    setupBarChart(timePeriodInChart, false);
+                    setupBarChart(StatsUtils.ensureNotSunday(timePeriodInChart), false);
                 }
             }
         });
@@ -152,28 +152,21 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
             public void onClick(View view) {
                 if (isMonthDisplayed) {
                     timePeriodInChart.add(Calendar.MONTH, -1);
-                    setupBarChart(timePeriodInChart, true);
+                    setupBarChart(StatsUtils.ensureNotSunday(timePeriodInChart), true);
                 } else {
                     timePeriodInChart.add(Calendar.DATE, -7);
-                    setupBarChart(timePeriodInChart, false);
+                    setupBarChart(StatsUtils.ensureNotSunday(timePeriodInChart), false);
                 }
             }
         });
 
         //displaying barChart
-        setupBarChart(new GregorianCalendar(), false);
+        setupBarChart(StatsUtils.ensureNotSunday(new GregorianCalendar()), false);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
-       /* if (id == R.id.stats) {
-            //starting statistics activity
-            final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
-            intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
-            startActivity(intent);
-        }*/
 
         if (id == R.id.schedule) {
             final Intent intent = new Intent(getApplicationContext(), ScheduleActivity.class);
@@ -185,15 +178,18 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
         return true;
     }
 
+    /**
+     * Pre: period is not SUNDAY, use ensureNotSunday method in StatsUtils
+     */
     private void setupBarChart(final GregorianCalendar period, boolean isMonth) {
         if (isMonth) {
             setupBarChartMonth(period);
         } else setupBarChartWeek(period);
 
         //disabling chart description
-        Description descr = new Description();
-        descr.setEnabled(false);
-        barChart.setDescription(descr);
+        Description description = new Description();
+        description.setEnabled(false);
+        barChart.setDescription(description);
         barChart.getBarData().setDrawValues(false);
 
         //creates a bit of empty space on the sides of the chart
@@ -238,15 +234,16 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
         barChart.invalidate();
     }
 
+    //pre: not Sunday
     private void setupBarChartWeek(final GregorianCalendar week) {
         Log.d(TAG, "creating barChart to display current week attendance");
 
         isMonthDisplayed = false;
         timePeriodInChart = week;
 
-        BarDataSet dataSet = dataGenerator(week, 6);
+        StatsUtils.GeneratedData<BarDataSet> generated = dataGenerator(week, 6);
 
-        BarData barData = new BarData(dataSet);
+        BarData barData = new BarData(generated.chartDataSet);
         barChart.setData(barData);
 
         int dateFrom, dateTo;
@@ -255,15 +252,15 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
             week.add(Calendar.DATE, -1); // Subtract 1 day until first day of week.
         }
         dateFrom = week.get(Calendar.DATE);
-        text.append(Integer.toString(dateFrom) + " " + week.getDisplayName(Calendar.MONTH, Calendar.SHORT, new Locale("US")));
+        text.append(Integer.toString(dateFrom)).append(" ").append(week.getDisplayName(Calendar.MONTH, Calendar.SHORT, new Locale("US")));
 
         week.add(Calendar.DATE, 5); //go to saturday
         dateTo = week.get(Calendar.DATE);
 
-        text.append(" - " + dateTo + " " + week.getDisplayName(Calendar.MONTH, Calendar.SHORT, new Locale("US")) + " " + week.get(Calendar.YEAR));
+        text.append(" - ").append(dateTo).append(" ").append(week.getDisplayName(Calendar.MONTH, Calendar.SHORT, new Locale("US"))).append(" ").append(week.get(Calendar.YEAR));
         headerText.setText(text.toString());
 
-        if (noData) {
+        if (generated.noData) {
             errorNoData.setText(R.string.error_no_data_for_week);
             errorNoData.setVisibility(View.VISIBLE);
             barChart.setVisibility(View.INVISIBLE);
@@ -273,22 +270,24 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
         }
     }
 
+    //pre: not Sunday
     private void setupBarChartMonth(final GregorianCalendar month) {
         Log.d(TAG, "creating barChart to display current month attendance");
 
         isMonthDisplayed = true;
         timePeriodInChart = month;
 
-        BarDataSet dataSet = dataGenerator(month, month.getActualMaximum(Calendar.DATE));
+        StatsUtils.GeneratedData<BarDataSet> generated = dataGenerator(month, month.getActualMaximum(Calendar.DATE));
 
-        BarData barData = new BarData(dataSet);
+        BarData barData = new BarData(generated.chartDataSet);
         barChart.setData(barData);
 
         headerText.setText("Month: 1 " + month.getDisplayName(Calendar.MONTH, Calendar.SHORT, new Locale("US")) + " - "
-                + Integer.toString(month.getActualMaximum(Calendar.DATE)) + " " + month.getDisplayName(Calendar.MONTH, Calendar.SHORT, new Locale("US"))
+                + Integer.toString(month.getActualMaximum(Calendar.DATE)) + " "
+                + month.getDisplayName(Calendar.MONTH, Calendar.SHORT, new Locale("US"))
                 + " " + month.get(Calendar.YEAR));
 
-        if (noData) {
+        if (generated.noData) {
             errorNoData.setText(R.string.error_no_data_for_month);
             errorNoData.setVisibility(View.VISIBLE);
             barChart.setVisibility(View.INVISIBLE);
@@ -305,17 +304,17 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
             return stats.attendanceHistory.get(i).date.get(Calendar.DATE) - 1;
     }
 
-    private BarDataSet dataGenerator(final GregorianCalendar period, final int length) {
+    private StatsUtils.GeneratedData<BarDataSet> dataGenerator(final GregorianCalendar period, final int length) {
         boolean isMonth = length != 6;
 
-        List<BarEntry> entries = new ArrayList<>(); //we will have 6 bars: for each day
+        List<BarEntry> entries = new ArrayList<>(); //we will have bars for each day
         for (int i = 0; i < length; i++) {
             entries.add(new BarEntry(0, 0));
         }
 
         int[] colors = new int[length];
         boolean[] filled = new boolean[length];
-        noData = true;
+        boolean noData = true;
 
         //data here is generated using linear search. It is not the most effective method, but size of stats will never be more, than 1e4, so it's ok
 
@@ -351,7 +350,7 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
         BarDataSet dataSet = new BarDataSet(entries, "attendanceBars");
         dataSet.setColors(colors);
 
-        return dataSet;
+        return new StatsUtils.GeneratedData<>(dataSet, noData);
     }
 
     /**
@@ -363,7 +362,7 @@ public class StatsActivity /*extends ScheduleActivity*/ extends Drawer {
             if (arr.get(i))
                 counter++;
         }
-        if(arr.size() == 0) return 0;
+        if (arr.size() == 0) return 0;
         return (float) counter / (float) arr.size() + shiftUpwards;
     }
 }

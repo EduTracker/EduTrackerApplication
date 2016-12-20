@@ -101,7 +101,7 @@ public class ChooseGroupActivity extends AppCompatActivity
 
             Log.d(TAG, "okButton pressed, groupName entered is: " + groupName);
 
-            //check if there is schedule for such group
+            //check if there is schedule for such group in globalSchedule
             localSchedule = Input.processGroupName(globalSchedule, groupName);
             if (localSchedule != null) {
                 Log.d(TAG, "group " + groupName + " found in global schedule, leaving chooseGroupActivity");

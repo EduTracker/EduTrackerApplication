@@ -2,6 +2,9 @@ package com.project.itmo2016.edutrackerapplication.utils;
 
 import com.project.itmo2016.edutrackerapplication.R;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 /**
  * Created by Aleksandr Tukallo on 08.12.16.
  */
@@ -66,5 +69,24 @@ public final class StatsUtils {
      */
     public static int getColorForYValue(float yValue, float shift) {
         return getClosestPairToYValue(yValue - shift).correspondingColor;
+    }
+
+    public final static class GeneratedData<T> {
+        public final boolean noData;
+        public final T chartDataSet;
+
+        public GeneratedData(T chartDataSet, boolean noData) {
+            this.noData = noData;
+            this.chartDataSet = chartDataSet;
+        }
+    }
+
+    /**
+     * Method makes date Saturday if it's Sunday else it isn't changed
+     */
+    public static GregorianCalendar ensureNotSunday(GregorianCalendar date) {
+        if (date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+            date.add(Calendar.DATE, -1);
+        return date;
     }
 }

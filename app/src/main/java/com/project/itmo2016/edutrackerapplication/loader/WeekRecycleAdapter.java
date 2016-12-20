@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.project.itmo2016.edutrackerapplication.R;
 import com.project.itmo2016.edutrackerapplication.models.schedule.Day;
-import com.project.itmo2016.edutrackerapplication.models.schedule.Lesson;
 import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
 
 import java.util.ArrayList;

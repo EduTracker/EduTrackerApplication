@@ -40,7 +40,6 @@ public class ScheduleLoader extends AsyncTaskLoader<LoadResult<GlobalSchedule>> 
         try {
             connection = ITMOScheduleApi.getScheduleRequest();
             Log.d(ChooseGroupActivity.TAG, "Establishing connection: " + connection.getURL());
-
             connection.connect();
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -49,7 +48,6 @@ public class ScheduleLoader extends AsyncTaskLoader<LoadResult<GlobalSchedule>> 
                 Log.d(ChooseGroupActivity.TAG, "Connection established, everything cool, starting parsing");
 
                 data = ParserJSON.parseResponse(in); //parsing and saving a schedule
-
                 resultType = ResultType.OK;
             } else {
                 // consider all other codes as errors
@@ -70,7 +68,10 @@ public class ScheduleLoader extends AsyncTaskLoader<LoadResult<GlobalSchedule>> 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            IOUtils.closeSilently(in);
+            try {
+                if (in != null) in.close();
+            } catch (IOException ignore) {
+            }
             if (connection != null)
                 connection.disconnect();
         }

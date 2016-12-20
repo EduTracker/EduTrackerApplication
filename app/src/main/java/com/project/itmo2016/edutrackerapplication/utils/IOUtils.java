@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,36 +25,6 @@ public final class IOUtils {
         final byte[] data = baos.toByteArray();
         final String content = new String(data, charset);
         return content;
-    }
-
-
-    /**
-     * Читает до конца все, что есть в потоке (не закрывает)
-     */
-    public static void readFully(InputStream in) throws IOException {
-        byte[] buffer = getIOBuffer();
-        while (in.read(buffer) >= 0) ;
-    }
-
-    public static void closeSilently(Closeable closeable) {
-        if (closeable == null) {
-            return;
-        }
-        try {
-            closeable.close();
-        } catch (Exception e) {
-        } // ignore
-    }
-
-    public static void readAndCloseSilently(InputStream in) {
-        if (in == null) {
-            return;
-        }
-        try {
-            readFully(in);
-        } catch (IOException e) {
-        } // ignore
-        closeSilently(in);
     }
 
     /**
