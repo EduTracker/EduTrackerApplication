@@ -89,4 +89,28 @@ public final class StatsUtils {
             date.add(Calendar.DATE, -1);
         return date;
     }
+
+    /**
+     * Method moves date to first day of the week (Monday)
+     */
+    public static void moveToMonday(GregorianCalendar date) {
+        while (date.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY)
+            date.add(Calendar.DAY_OF_WEEK, -1);
+    }
+
+    /**
+     * Method coverts weekDay numeration from (Mon = 2, Sat = 7) as used in GregorianCalendar to Mon = 0, Sat = 5
+     */
+    public static int convertWeekDayNumeration(int weekDay) {
+        if (weekDay == 1) return 6; //sunday
+        return weekDay - 2;
+    }
+
+    /**
+     * Copy of argument is returned as new GregorianCalendar object
+     */
+    public static GregorianCalendar copyCalendarConstructor(GregorianCalendar other) {
+        return new GregorianCalendar(other.get(Calendar.YEAR), other.get(Calendar.MONTH), other.get(Calendar.DATE));
+    }
+
 }

@@ -84,10 +84,7 @@ public class StatsActivity extends Drawer {
                 for (int j = 0; j < numberOfPeriodsEachDay[dateToFillFrom.get(Calendar.DAY_OF_WEEK) - 2]; j++) {
                     arr.add((ThreadLocalRandom.current().nextInt(0, 2) == 0));
                 }
-                stats.attendanceHistory.add(new StatsDay(arr,
-                        new GregorianCalendar(dateToFillFrom.get(Calendar.YEAR),
-                                dateToFillFrom.get(Calendar.MONTH),
-                                dateToFillFrom.get(Calendar.DATE))));
+                stats.attendanceHistory.add(new StatsDay(arr, StatsUtils.copyCalendarConstructor(dateToFillFrom)));
             }
 
             dateToFillFrom.add(Calendar.DATE, 1);
@@ -247,11 +244,10 @@ public class StatsActivity extends Drawer {
         barChart.setData(barData);
 
         int dateFrom, dateTo;
-        StringBuilder text = new StringBuilder("Week: ");
-        while (week.get(Calendar.DAY_OF_WEEK) > GregorianCalendar.MONDAY) {
-            week.add(Calendar.DATE, -1); // Subtract 1 day until first day of week.
-        }
+        StatsUtils.moveToMonday(week);
         dateFrom = week.get(Calendar.DATE);
+
+        StringBuilder text = new StringBuilder("Week: ");
         text.append(Integer.toString(dateFrom)).append(" ").append(week.getDisplayName(Calendar.MONTH, Calendar.SHORT, new Locale("US")));
 
         week.add(Calendar.DATE, 5); //go to saturday

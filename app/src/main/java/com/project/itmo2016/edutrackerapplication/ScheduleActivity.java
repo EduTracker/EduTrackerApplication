@@ -22,6 +22,7 @@ import com.project.itmo2016.edutrackerapplication.models.statistics.Stats;
 import com.project.itmo2016.edutrackerapplication.models.statistics.StatsDay;
 import com.project.itmo2016.edutrackerapplication.utils.FileIOUtils;
 import com.project.itmo2016.edutrackerapplication.utils.RecylcerDividersDecorator;
+import com.project.itmo2016.edutrackerapplication.utils.StatsUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,7 +85,6 @@ public class ScheduleActivity extends Drawer {
         }
 
         //Loading schedule from another activity if needed
-//        if (true) { //true here only for debug
         if (!isFileCreated(PATH_TO_LOCAL_SCHEDULE)) {
             Log.d(TAG, "localSchedule must be downloaded");
 
@@ -102,87 +102,79 @@ public class ScheduleActivity extends Drawer {
 
             //If app was opened last time more than a week ago, checkboxes must be saved to stats and turned to false
             latestEnter = FileIOUtils.loadSerializableFromFile(PATH_TO_LATEST_DATE, this);
-            FileIOUtils.saveObjectToFile(new GregorianCalendar(), PATH_TO_LATEST_DATE, this);
-            saveCheckBoxesToStats(latestEnter);
+            FileIOUtils.saveObjectToFile(StatsUtils.ensureNotSunday(new GregorianCalendar()), PATH_TO_LATEST_DATE, this);
+            saveCheckBoxesToStats(StatsUtils.ensureNotSunday(latestEnter));
         }
 
     }
 
-    //gets where Monday is 2, returns, where Monday is 0
-    private int convertDayFromCalendar(int day) {
-        assert day != 1; //never working with sunday
-        if (day == 0) return 5;
-        return day - 2;
-    }
-
-    //weekday: Monday is №2 (same as GregorianCalendar)
-    ArrayList<Boolean> getArrOfAttendance(int weekDay) {
-
+    /**
+     * Method returns array with booleans for each period (visited\missed) for specified day.
+     *
+     * @param weekDay is the day to get array of attendance for. Important! weekDay's numeration is the same as
+     *                numeration of days in GregorianCalendar (Monday is 2, Saturday is 7).
+     * @return has size of number of periods on weekDay. Every period is either visited or missed
+     */
+    private ArrayList<Boolean> getArrOfAttendance(int weekDay) {
+        ArrayList<Boolean> ret = new ArrayList<>();
         for (int i = 0; i < localSchedule.days.size(); i++) {
-            if (localSchedule.days.get(i).dayOfTheWeek == convertDayFromCalendar(weekDay) + 1) {
-                ArrayList<Boolean> ret = new ArrayList<>();
-
+            if (localSchedule.days.get(i).dayOfTheWeek == StatsUtils.convertWeekDayNumeration(weekDay) + 1) {
                 for (int j = 0; j < localSchedule.days.get(i).lessons.size(); j++) {
-                    ret.add(checkboxData.get(convertDayFromCalendar(weekDay)).get(j));
+                    ret.add(checkboxData.get(StatsUtils.convertWeekDayNumeration(weekDay)).get(j));
                 }
-
-                return ret;
+                break;
             }
         }
-
-
-        return new ArrayList<Boolean>(); //if not found, 0 periods in that day, empty array
+        return ret; //if not found, 0 periods in that day, empty array, it's ok
     }
 
-    //moves date to MONDAY of this week
-    private void goToFirstDayOfTheWeek(GregorianCalendar date) {
-        while (date.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY)
-            date.add(Calendar.DAY_OF_WEEK, -1);
-    }
-
+    /**
+     * @param date is not Sunday!
+     */
     private void saveCheckBoxesToStats(GregorianCalendar date) {
+        //load stats from file
         Stats stats = FileIOUtils.loadSerializableFromFile(pathToStats, this);
-
-        if (date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-            date.add(Calendar.DAY_OF_WEEK, -1);
 
         boolean found = false; //if one day is found, all days of the week before date are found.
         for (int i = 0; i < stats.attendanceHistory.size(); i++) {
             if (stats.attendanceHistory.get(i).date.get(Calendar.WEEK_OF_YEAR) == date.get(Calendar.WEEK_OF_YEAR)
                     && stats.attendanceHistory.get(i).date.get(Calendar.YEAR) == date.get(Calendar.YEAR)
-                    && stats.attendanceHistory.get(i).date.get(Calendar.DAY_OF_WEEK) <= date.get(Calendar.DAY_OF_WEEK)) { //todo what about !=
+                    && stats.attendanceHistory.get(i).date.get(Calendar.DAY_OF_WEEK) <= date.get(Calendar.DAY_OF_WEEK)) {
                 found = true;
+                //arr updated according to checkboxes, they override previous data for current week
                 stats.attendanceHistory.set(i,
-                        new StatsDay(getArrOfAttendance(stats.attendanceHistory.get(i).date.get(Calendar.DAY_OF_WEEK)),
-                                stats.attendanceHistory.get(i).date)); //arr upd according to checkboxes
+                        new StatsDay(
+                                getArrOfAttendance(stats.attendanceHistory.get(i).date.get(Calendar.DAY_OF_WEEK)),
+                                stats.attendanceHistory.get(i).date));
             }
         }
 
+        //if date is not found in stats, we need to add all of the week date belongs to to stats
         if (!found) {
-            GregorianCalendar curDate = new GregorianCalendar();
-            goToFirstDayOfTheWeek(curDate);
+            GregorianCalendar itDate = StatsUtils.copyCalendarConstructor(date);
+            StatsUtils.moveToMonday(itDate);
 
-            date.add(Calendar.DAY_OF_WEEK, 1); //for inclusive cycle with !=
+            //fill stats with data from checkboxes before date inclusively
+            while (StatsUtils.convertWeekDayNumeration(itDate.get(Calendar.DAY_OF_WEEK))
+                    <= StatsUtils.convertWeekDayNumeration(date.get(Calendar.DAY_OF_WEEK))) {
 
-            while (curDate.get(Calendar.DAY_OF_WEEK) != date.get(Calendar.DAY_OF_WEEK)) {
-                stats.attendanceHistory.add(
-                        new StatsDay(getArrOfAttendance(curDate.get(Calendar.DAY_OF_WEEK)),
-                                new GregorianCalendar(curDate.get(Calendar.YEAR),
-                                        curDate.get(Calendar.MONTH),
-                                        curDate.get(Calendar.DATE))));
-                curDate.add(Calendar.DAY_OF_WEEK, 1);
+                stats.attendanceHistory.add(new StatsDay(getArrOfAttendance(itDate.get(Calendar.DAY_OF_WEEK)),
+                        StatsUtils.copyCalendarConstructor(itDate)));
+
+                itDate.add(Calendar.DAY_OF_WEEK, 1);
             }
-            //fill with empty arrs till end of the week:
 
-            while (curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) { //till Sunday
-                stats.attendanceHistory.add(
-                        new StatsDay(new ArrayList<Boolean>(),
-                                new GregorianCalendar(curDate.get(Calendar.YEAR),
-                                        curDate.get(Calendar.MONTH),
-                                        curDate.get(Calendar.DATE))));
-                curDate.add(Calendar.DAY_OF_WEEK, 1);
+            //fill with empty arrs till end of the week:
+            while (StatsUtils.convertWeekDayNumeration(itDate.get(Calendar.DAY_OF_WEEK))
+                    <= StatsUtils.convertWeekDayNumeration(Calendar.SATURDAY)) {
+
+                stats.attendanceHistory.add(new StatsDay(new ArrayList<Boolean>(),
+                        StatsUtils.copyCalendarConstructor(itDate)));
+
+                itDate.add(Calendar.DAY_OF_WEEK, 1);
             }
         }
+
         //saving changed file back
         FileIOUtils.saveObjectToFile(stats, pathToStats, this);
 
@@ -195,15 +187,12 @@ public class ScheduleActivity extends Drawer {
 
         if (id == R.id.stats) {
             //starting statistics activity
-
             saveCheckBoxesToStats(new GregorianCalendar());
 
             final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
             intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
             startActivity(intent);
         }
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

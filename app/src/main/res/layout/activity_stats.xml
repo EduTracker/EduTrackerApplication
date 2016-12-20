@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
-            android:background="@drawable/backdround"
+            android:background="@drawable/background"
             android:text="@string/previous" />
 
         <FrameLayout
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
-            android:background="@drawable/backdround"
+            android:background="@drawable/background"
             android:text="@string/next" />
 
     </LinearLayout>
@@ -83,7 +83,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/switch_button"
-            android:background="@drawable/backdround"
+            android:background="@drawable/background"
             android:id="@+id/switch_button"/>
 
     </LinearLayout>
