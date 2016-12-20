@@ -13,16 +13,11 @@ import com.project.itmo2016.edutrackerapplication.R;
 import com.project.itmo2016.edutrackerapplication.models.schedule.Day;
 import com.project.itmo2016.edutrackerapplication.models.schedule.Lesson;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 
 class DayRecyclerAdapter extends RecyclerView.Adapter<DayRecyclerAdapter.DayViewHolder> {
 
-
-
-    private final Context context;
     private final LayoutInflater layoutInflater;
     private String[] parity = new String[]{"Еженедельно", "Четная", "Нечетная"};
 
@@ -32,7 +27,6 @@ class DayRecyclerAdapter extends RecyclerView.Adapter<DayRecyclerAdapter.DayView
 
 
     DayRecyclerAdapter(Context context, ArrayList<ArrayList<Boolean>> checked) {
-        this.context = context;
         this.checked = checked;
         layoutInflater = LayoutInflater.from(context);
     }
@@ -82,8 +76,6 @@ class DayRecyclerAdapter extends RecyclerView.Adapter<DayRecyclerAdapter.DayView
     public int getItemCount() {
         return daySchedule == null ? 0 : daySchedule.lessons.size();
     }
-
-
 
     static class DayViewHolder extends RecyclerView.ViewHolder {
         final TextView time_from;

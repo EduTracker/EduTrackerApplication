@@ -22,6 +22,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:background="@drawable/background"
+
             android:text="@string/previous"
             tools:ignore="NestedWeights" />
 

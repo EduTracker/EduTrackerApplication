@@ -1,17 +1,26 @@
-# EduTrackerApplication
+# EduTracker
 
-Our goal is to implement an application, which tracks the attendance of a student from ITMO University. The student enters its group name, the schedule 
-for entered group is downloaded and parsed from ITMO website. Then during every period in schedule an application checks the geolocation of the smartphone and
-compares it with the ITMO University address. Then the student can see his charts of attendance. We hope, that this will motivate a student to attend all the classes.
+Цель нашего проекта — создать приложение, отслеживающее посещаемость студента Университета ИТМО. Студент выбирает группу, приложение получает расписание через **API** ИТМО, парсит его, отображает в `ScheduleActivity`. Затем можно отмечать пары, которые были посещены с помощью чекбоксов. На основании собранной статистики в `StatsActivity` строятся графики, отображающие процент посещаемости пар в определенный день.
 
-The application is a semester project for Android Applications Development course in ITMO University made by Vitalii Karavaev, Aleksandr Tukallo, Mekhrubon Turaev.
+Приложение является семестровым проектом студентов 2 курса ИТМО: Караваева Виталия, Тукалло Александра, Тураева Мехрубона.
 
-For drawing charts in an app we are using [**MPAndroidChart**](https://github.com/PhilJay/MPAndroidChart) library.
+Для отрисовки графиков используется сторонняя библиотека [**MPAndroidChart**](https://github.com/PhilJay/MPAndroidChart). Приложение имеет 3 `activity`: `ChooseGroupActivity`, `ScheduleActivity`, `StatsActivity`. Навигация между activities осуществялется через `NavigationBar`.
 
-Current progress:
-* ChooseGroupActivity is implemented. The schedule is being successfully downloaded from ITMO website, parsed and saved to a file.
+Выбор группы и расписание с чекбоксами:
+<p align="center">
+<img float="left" src="screnshots/Screenshot_enterGroupName.png" width="250"/>
+<img float="left" src="screnshots/Screenshot_schedule.png" width="250"/>
+</p>
 
-Short-term goals:
-* Design ScheduleActivity. Place a scrollview\recyclerview with a schedule there.
-* Design and implement StatisticsActivity (partially already done). 
-* Implement a method which will check the geolocation of the smarthpone during every period and compare it to the address mentioned in schedule.
+Графики посещаемости в течение недели и месяца:
+<p align="сenter">
+<img float="left" src="screnshots/Screenshot_chart1.png" width="250"/>
+<img float="left" src="screnshots/Screenshot_chart2.png" width="250"/>
+<img float="left" src="screnshots/Screenshot_chart3.png" width="250"/>
+</p>
+
+В текущий момент API ИТМО для получения расписания отключено, тк началась сессия и расписание неактуально. Поэтому, для демонстрации возможностей приложения, расписание выгружается с тестового адреса, где лежит ранее выгруженный `json`.
+
+К приложению планируется в течение месяца добавить:
+* Возможность определять, посещена ли пара через геолокацию
+* Активити с настройками. В частности, изменение номера группы и смена языка

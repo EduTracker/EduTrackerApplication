@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
@@ -31,10 +32,11 @@ public final class FileIOUtils {
     public static void saveObjectToFile(Serializable obj, String path, Context context) {
         File f = new File(context.getFilesDir(), path);
 
-        try {
-            ByteArrayOutputStream bos = null;
-            ObjectOutput out = null;
+        ByteArrayOutputStream bos = null;
+        ObjectOutput out = null;
+        FileOutputStream fout = null;
 
+        try {
             //getting byte array from serializable localSchedule, then saving byte arr to file f
             bos = new ByteArrayOutputStream();
 
@@ -42,15 +44,20 @@ public final class FileIOUtils {
             out.writeObject(obj);
             out.flush();
 
-            FileOutputStream fout = new FileOutputStream(f);
+            fout = new FileOutputStream(f);
             fout.write(bos.toByteArray());
 
-            //TODO is closing streams ok? Mb transfer to finally?
-            bos.close();
-            out.close();
         } catch (Exception e) {
             e.printStackTrace();
             f.delete();
+
+        } finally {
+            try {
+                if (bos != null) bos.close();
+                if (out != null) out.close();
+                if (fout != null) fout.close();
+            } catch (IOException ignore) {
+            }
         }
     }
 
@@ -65,18 +72,23 @@ public final class FileIOUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> T loadSerializableFromFile(String path, Context context) {
+        FileInputStream streamIn = null;
+        ObjectInputStream objectInputStream = null;
+        T ret = null;
+
         try {
-            FileInputStream streamIn = new FileInputStream(context.getFilesDir() + "/" + path);
-            ObjectInputStream objectInputStream = new ObjectInputStream(streamIn);
-            T ret;
+            streamIn = new FileInputStream(context.getFilesDir() + "/" + path);
+            objectInputStream = new ObjectInputStream(streamIn);
             ret = (T) objectInputStream.readObject();
-            //TODO is closing streams ok? Mb in finally?
-            streamIn.close();
-            objectInputStream.close();
-            return ret;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+        } finally {
+            try {
+                if (streamIn != null) streamIn.close();
+                if (objectInputStream != null) streamIn.close();
+            } catch (IOException ignore) {
+            }
         }
+        return ret;
     }
 }
