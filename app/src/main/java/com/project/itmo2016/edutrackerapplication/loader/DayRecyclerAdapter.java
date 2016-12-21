@@ -10,24 +10,23 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.project.itmo2016.edutrackerapplication.R;
+import com.project.itmo2016.edutrackerapplication.cache.CheckboxCache;
 import com.project.itmo2016.edutrackerapplication.models.schedule.Day;
 import com.project.itmo2016.edutrackerapplication.models.schedule.Lesson;
-
-import java.util.ArrayList;
 
 
 class DayRecyclerAdapter extends RecyclerView.Adapter<DayRecyclerAdapter.DayViewHolder> {
 
+    private final Context context;
     private final LayoutInflater layoutInflater;
     private String[] parity = new String[]{"Еженедельно", "Четная", "Нечетная"};
 
     private Day daySchedule = null;
-    private ArrayList<ArrayList<Boolean>> checked;
     private int weekOffset;
 
 
-    DayRecyclerAdapter(Context context, ArrayList<ArrayList<Boolean>> checked) {
-        this.checked = checked;
+    DayRecyclerAdapter(Context context) {
+        this.context = context;
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -50,26 +49,9 @@ class DayRecyclerAdapter extends RecyclerView.Adapter<DayRecyclerAdapter.DayView
         holder.time_from.setText(String.valueOf(lessons.startTime));
         holder.time_to.setText(String.valueOf(lessons.endTime));
 //        holder.checkbox.setChecked(false);
-        holder.checkbox.setChecked(checked.get(weekOffset).get(position));
-        holder.checkbox.setOnClickListener(new Listener(position, holder));
-    }
 
-    private class Listener implements View.OnClickListener {
-        int pos;
-        DayViewHolder holder;
-
-        Listener(int pos, DayViewHolder holder) {
-            this.pos = pos;
-            this.holder = holder;
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (view == holder.checkbox) {
-                Log.d("Checkbox click", "Day " + weekOffset + " pos " + pos + "=" + holder.checkbox.isChecked());
-                checked.get(weekOffset).set(pos, holder.checkbox.isChecked());
-            }
-        }
+        holder.checkbox.setChecked(new CheckboxCache(context).get(weekOffset, position) == 1);
+        holder.checkbox.setOnClickListener(new Listener(context, position, holder));
     }
 
     @Override
@@ -96,6 +78,26 @@ class DayRecyclerAdapter extends RecyclerView.Adapter<DayRecyclerAdapter.DayView
         static DayViewHolder newInstance(LayoutInflater layoutInflater, ViewGroup parent) {
             final View view = layoutInflater.inflate(R.layout.schedule_day_item, parent, false);
             return new DayViewHolder(view);
+        }
+    }
+
+    private class Listener implements View.OnClickListener {
+        final Context context;
+        int pos;
+        DayViewHolder holder;
+
+        Listener(Context context, int pos, DayViewHolder holder) {
+            this.context = context;
+            this.pos = pos;
+            this.holder = holder;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (view == holder.checkbox) {
+                Log.d("Checkbox click", "Day " + weekOffset + " pos " + pos + "=" + holder.checkbox.isChecked());
+                new CheckboxCache(context).put(weekOffset, pos, holder.checkbox.isChecked() ? 1 : 0);
+            }
         }
     }
 }

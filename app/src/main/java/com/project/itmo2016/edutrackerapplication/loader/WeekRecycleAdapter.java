@@ -13,26 +13,22 @@ import com.project.itmo2016.edutrackerapplication.R;
 import com.project.itmo2016.edutrackerapplication.models.schedule.Day;
 import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
 
-import java.util.ArrayList;
-
 
 public class WeekRecycleAdapter extends RecyclerView.Adapter<WeekRecycleAdapter.WeekViewHolder> {
     private static final String[] WEEKDAY = new String[]{"Понедельник", "Вторник",
-    "Среда",
-    "Четверг",
-    "Пятница",
-    "Суббота",
-    "Воскресенье"
+            "Среда",
+            "Четверг",
+            "Пятница",
+            "Суббота",
+            "Воскресенье"
     };
     private final Context context;
     private final LayoutInflater layoutInflater;
 
     private LocalSchedule week = null;
-    private ArrayList<ArrayList<Boolean>> checkedPerDays;
 
-    public WeekRecycleAdapter(Context context, ArrayList<ArrayList<Boolean>> checkedPerDays) {
+    public WeekRecycleAdapter(Context context) {
         this.context = context;
-        this.checkedPerDays = checkedPerDays;
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -45,7 +41,7 @@ public class WeekRecycleAdapter extends RecyclerView.Adapter<WeekRecycleAdapter.
     @Override
     public WeekViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d("View Create", "Launched");
-        return WeekViewHolder.newInstance(layoutInflater, parent, context, checkedPerDays);
+        return WeekViewHolder.newInstance(layoutInflater, parent, context);
     }
 
     @Override
@@ -66,18 +62,18 @@ public class WeekRecycleAdapter extends RecyclerView.Adapter<WeekRecycleAdapter.
         final DayRecyclerAdapter day;
         final private RecyclerView daysRecView;
 
-        WeekViewHolder(View itemView, Context context, ArrayList<ArrayList<Boolean>> checked) {
+        WeekViewHolder(View itemView, Context context) {
             super(itemView);
             this.dayName = (TextView) itemView.findViewById(R.id.day_name);
             this.daysRecView = (RecyclerView) itemView.findViewById(R.id.single_day);
-            day = new DayRecyclerAdapter(context, checked);
+            day = new DayRecyclerAdapter(context);
             daysRecView.setAdapter(day);
             daysRecView.setLayoutManager(new LinearLayoutManager(context));
         }
 
-        static WeekViewHolder newInstance(LayoutInflater layoutInflater, ViewGroup parent, Context context, ArrayList<ArrayList<Boolean>> checked) {
+        static WeekViewHolder newInstance(LayoutInflater layoutInflater, ViewGroup parent, Context context) {
             final View view = layoutInflater.inflate(R.layout.schedule_item, parent, false);
-            return new WeekViewHolder(view, context, checked);
+            return new WeekViewHolder(view, context);
         }
     }
 
