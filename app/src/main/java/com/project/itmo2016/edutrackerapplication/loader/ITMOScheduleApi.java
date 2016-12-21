@@ -9,7 +9,7 @@ import java.net.URL;
 /**
  * Created by Aleksandr Tukallo on 01.12.16.
  */
-public class ITMOScheduleApi {
+class ITMOScheduleApi {
 
     //tmp json is stored here
     private static final String BASE_URI = "https://api.myjson.com/bins/47o7r";

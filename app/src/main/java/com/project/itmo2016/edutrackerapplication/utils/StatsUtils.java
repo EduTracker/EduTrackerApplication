@@ -40,7 +40,6 @@ public final class StatsUtils {
      * Method looks for, closest to yValue, Pair.yValue in array.
      * It is done in O(n) time, can be optimized with search tree.
      *
-     * @param yValue
      * @return Pair with closest yValue to parameter is returned.
      */
     private static Pair getClosestPairToYValue(float yValue) {

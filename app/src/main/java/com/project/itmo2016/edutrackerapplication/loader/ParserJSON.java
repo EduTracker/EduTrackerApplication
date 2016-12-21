@@ -21,9 +21,9 @@ import java.util.ArrayList;
 /**
  * Created by Aleksandr Tukallo on 04.12.16.
  */
-public class ParserJSON {
+class ParserJSON {
 
-    public static GlobalSchedule parseResponse(InputStream in) {
+    static GlobalSchedule parseResponse(InputStream in) {
         try {
             final JSONObject jsonObj = new JSONObject(IOUtils.readToString(in, "UTF-8"));
             return parseJson(jsonObj);

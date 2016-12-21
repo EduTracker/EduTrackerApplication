@@ -18,7 +18,7 @@ import java.net.HttpURLConnection;
 public class ScheduleLoader extends AsyncTaskLoader<LoadResult<GlobalSchedule>> {
 
     private GlobalSchedule data = null;
-    ResultType resultType = ResultType.ERROR;
+    private ResultType resultType = ResultType.ERROR;
 
     public ScheduleLoader(Context context) {
         super(context);
@@ -29,7 +29,7 @@ public class ScheduleLoader extends AsyncTaskLoader<LoadResult<GlobalSchedule>> 
         if (data == null)
             forceLoad();
         else
-            deliverResult(new LoadResult<GlobalSchedule>(resultType, data));
+            deliverResult(new LoadResult<>(resultType, data));
     }
 
     @Override

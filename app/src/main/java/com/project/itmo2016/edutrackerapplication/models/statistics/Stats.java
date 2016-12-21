@@ -25,7 +25,7 @@ public class Stats implements Serializable {
     @NonNull
     public final String groupName;
 
-    public Stats(ArrayList<StatsDay> attendanceHistory, @NonNull String groupName) {
+    public Stats(@NonNull ArrayList<StatsDay> attendanceHistory, @NonNull String groupName) {
         this.attendanceHistory = attendanceHistory;
         this.groupName = groupName;
     }

@@ -23,8 +23,7 @@ public final class IOUtils {
             baos.write(buffer, 0, readSize);
         }
         final byte[] data = baos.toByteArray();
-        final String content = new String(data, charset);
-        return content;
+        return new String(data, charset);
     }
 
     /**
@@ -43,7 +42,7 @@ public final class IOUtils {
     /**
      * @return буфер размеров в 8кб для I/O. Потокобезопасный.ы
      */
-    public static byte[] getIOBuffer() {
+    static byte[] getIOBuffer() {
         byte[] buffer = bufferThreadLocal.get();
         if (buffer == null) {
             buffer = new byte[8192];

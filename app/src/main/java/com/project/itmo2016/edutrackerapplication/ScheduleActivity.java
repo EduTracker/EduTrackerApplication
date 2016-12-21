@@ -40,7 +40,7 @@ public class ScheduleActivity extends Drawer {
     private static final String PATH_TO_LOCAL_SCHEDULE = "localSchedule";
     private static final String PATH_TO_LATEST_DATE = "latestEnter";
     private static final String BASE_FOR_PATH_TO_STATS = "stats";
-//    private static final String[] KEYS_CHECKBOXES = new String[]{"mon", "tue", "wdn", "thr", "fri", "sat"};
+
     GregorianCalendar latestEnter;
     TextView error;
     RecyclerView recyclerView;
@@ -78,9 +78,6 @@ public class ScheduleActivity extends Drawer {
         } else {
             Log.d(TAG, "localSchedule was already downloaded, loading it from file");
 
-//            if (savedInstanceState != null)
-//                loadCheckboxesFromSavedState(savedInstanceState);
-
             localSchedule = FileIOUtils.loadSerializableFromFile(PATH_TO_LOCAL_SCHEDULE, this);
             assert localSchedule != null;
             pathToStats = BASE_FOR_PATH_TO_STATS + localSchedule.groupName;
@@ -90,6 +87,7 @@ public class ScheduleActivity extends Drawer {
             latestEnter = FileIOUtils.loadSerializableFromFile(PATH_TO_LATEST_DATE, this);
             FileIOUtils.saveObjectToFile(StatsUtils.ensureNotSunday(new GregorianCalendar()), PATH_TO_LATEST_DATE, this);
             saveCheckBoxesToStats(StatsUtils.ensureNotSunday(latestEnter));
+            //TODO make all checkboxes false here
         }
 
     }

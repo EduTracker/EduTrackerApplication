@@ -25,7 +25,7 @@ public class LoadResult<T> {
     @Nullable
     public final T data;
 
-    public LoadResult(@NonNull ResultType resultType, @Nullable T data) {
+    LoadResult(@NonNull ResultType resultType, @Nullable T data) {
         this.resultType = resultType;
         this.data = data;
     }

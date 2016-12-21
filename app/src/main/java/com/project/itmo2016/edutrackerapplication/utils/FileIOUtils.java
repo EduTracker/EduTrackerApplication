@@ -1,6 +1,7 @@
 package com.project.itmo2016.edutrackerapplication.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,7 +28,6 @@ public final class FileIOUtils {
      *
      * @param obj     is a Serializable object, that will be written to file
      * @param path    is a fileName, where object will be saved
-     * @param context
      */
     public static void saveObjectToFile(Serializable obj, String path, Context context) {
         File f = new File(context.getFilesDir(), path);
@@ -49,8 +49,7 @@ public final class FileIOUtils {
 
         } catch (Exception e) {
             e.printStackTrace();
-            f.delete();
-
+            if(!f.delete()) Log.d("FileIOUtils", "unable to delete file");
         } finally {
             try {
                 if (bos != null) bos.close();
@@ -66,7 +65,6 @@ public final class FileIOUtils {
      * Warnings about unchecked cast to type T are suppressed
      *
      * @param path    is a path to file, from where to read
-     * @param context
      * @param <T>     is a type of object in file
      * @return read object of type T is returned. If unable to read object from file, null is returned.
      */
