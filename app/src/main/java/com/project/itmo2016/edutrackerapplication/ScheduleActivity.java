@@ -107,6 +107,15 @@ public class ScheduleActivity extends Drawer {
         return checkboxData;
     }
 
+    private void putCheckbox(ArrayList<ArrayList<Integer>> checkbox) {
+        CheckboxCache table = new CheckboxCache(this);
+        for (int i = 0; i < checkbox.size(); i++) {
+            for (int j = 0; j < checkbox.get(i).size(); j++) {
+                table.put(i, j, checkbox.get(i).get(j));
+            }
+        }
+    }
+
 
     /**
      * Method returns array with booleans for each period (visited\missed) for specified day.
