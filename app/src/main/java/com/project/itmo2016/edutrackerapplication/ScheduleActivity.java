@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.project.itmo2016.edutrackerapplication.cache.CheckboxCache;
 import com.project.itmo2016.edutrackerapplication.loader.WeekRecycleAdapter;
 import com.project.itmo2016.edutrackerapplication.models.schedule.LocalSchedule;
 import com.project.itmo2016.edutrackerapplication.models.statistics.Stats;
@@ -31,39 +32,31 @@ import java.util.GregorianCalendar;
 
 public class ScheduleActivity extends Drawer {
 
-    private static final int REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY = 1;
     public static final String TAG = "ScheduleActivity tag";
+    public static final String EXTRA_PATH_TO_STATS = "extraPathToStats";
+    public static final int NUMBER_OF_DAYS_IN_WEEK = 7;
+    public static final int MAX_PAIRS_AMOUNT_PER_DAY = 10;
+    private static final int REQUEST_CODE_FOR_CHOOSE_GROUP_ACTIVITY = 1;
     private static final String PATH_TO_LOCAL_SCHEDULE = "localSchedule";
     private static final String PATH_TO_LATEST_DATE = "latestEnter";
     private static final String BASE_FOR_PATH_TO_STATS = "stats";
-    public static final String EXTRA_PATH_TO_STATS = "extraPathToStats";
-    private String pathToStats; // = base + groupName
-
-    private static final String[] KEYS_CHECKBOXES = new String[]{"mon", "tue", "wdn", "thr", "fri", "sat"};
-
-    private final int NUMBER_OF_DAYS_IN_WEEK = 7;
-    private final int MAX_PAIRS_AMOUNT_PER_DAY = 10;
-
-    private ArrayList<ArrayList<Boolean>> checkboxData; // checkboxData[weekDay = {0..6}][{pairNumber = {0, ?9}] = true
-    // if lesson pairNumberth lesson on {"Monday", .., "Sunday"}.get(weekDay) was attended
-    // false - otherwise.
-
+//    private static final String[] KEYS_CHECKBOXES = new String[]{"mon", "tue", "wdn", "thr", "fri", "sat"};
     GregorianCalendar latestEnter;
-
-    private LocalSchedule localSchedule = null;
-
     TextView error;
     RecyclerView recyclerView;
     WeekRecycleAdapter adapter = null;
+    private String pathToStats; // = base + groupName
+    private LocalSchedule localSchedule = null;
 
     /**
      * localSchedule and pathToStats are initialized here
      */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
-
         super.onCreate(savedInstanceState);
+
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_schedule, null, false);
         drawer.addView(contentView, 0);
@@ -76,13 +69,6 @@ public class ScheduleActivity extends Drawer {
         error = (TextView) findViewById(R.id.error_text);
         error.setVisibility(View.VISIBLE);
 
-        checkboxData = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_DAYS_IN_WEEK; i++) {
-            checkboxData.add(new ArrayList<Boolean>());
-            for (int j = 0; j < MAX_PAIRS_AMOUNT_PER_DAY; j++) {
-                checkboxData.get(i).add(false);
-            }
-        }
 
         //Loading schedule from another activity if needed
         if (!isFileCreated(PATH_TO_LOCAL_SCHEDULE)) {
@@ -108,6 +94,20 @@ public class ScheduleActivity extends Drawer {
 
     }
 
+    private ArrayList<ArrayList<Integer>> getCheckbox() {
+        ArrayList<ArrayList<Integer>> checkboxData = new ArrayList<>();
+        CheckboxCache table = new CheckboxCache(this);
+        for (int i = 0; i < NUMBER_OF_DAYS_IN_WEEK; i++) {
+            checkboxData.add(new ArrayList<Integer>());
+            for (int j = 0; j < MAX_PAIRS_AMOUNT_PER_DAY; j++) {
+                checkboxData.get(i).add(table.get(i, j));
+            }
+        }
+
+        return checkboxData;
+    }
+
+
     /**
      * Method returns array with booleans for each period (visited\missed) for specified day.
      *
@@ -117,10 +117,11 @@ public class ScheduleActivity extends Drawer {
      */
     private ArrayList<Boolean> getArrOfAttendance(int weekDay) {
         ArrayList<Boolean> ret = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> checkbox = getCheckbox();
         for (int i = 0; i < localSchedule.days.size(); i++) {
             if (localSchedule.days.get(i).dayOfTheWeek == StatsUtils.convertWeekDayNumeration(weekDay) + 1) {
                 for (int j = 0; j < localSchedule.days.get(i).lessons.size(); j++) {
-                    ret.add(checkboxData.get(StatsUtils.convertWeekDayNumeration(weekDay)).get(j));
+                    ret.add(checkbox.get(StatsUtils.convertWeekDayNumeration(weekDay)).get(j) == 1);
                 }
                 break;
             }
@@ -202,7 +203,7 @@ public class ScheduleActivity extends Drawer {
         assert localSchedule != null;
         Log.d("Trying to display", String.valueOf(localSchedule.days.size()));
         if (adapter == null) {
-            adapter = new WeekRecycleAdapter(this, checkboxData);
+            adapter = new WeekRecycleAdapter(this);
             recyclerView.setAdapter(adapter);
         }
         adapter.setSchedule(localSchedule);
@@ -259,27 +260,4 @@ public class ScheduleActivity extends Drawer {
         File f = new File(getFilesDir(), PATH);
         return f.exists();
     }
-
-    //TODO: save checkboxes!!
-//    @Override
-//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-//        super.onSaveInstanceState(outState, outPersistentState);
-//
-//        for (int i = 0; i < KEYS_CHECKBOXES.length; i++) {
-//            boolean[] arr = new boolean[checkboxData.get(i).size()];
-//            for (int j = 0; j < checkboxData.get(i).size(); j++)
-//                arr[i] = checkboxData.get(i).get(j);
-//
-//            outState.putBooleanArray(KEYS_CHECKBOXES[i], arr);
-//        }
-//    }
-//
-//    private void loadCheckboxesFromSavedState(Bundle savedInstanceState) {
-//        for (int i = 0; i < KEYS_CHECKBOXES.length; i++) {
-//            checkboxData.set(i, new ArrayList<Boolean>());
-//            boolean[] arr = savedInstanceState.getBooleanArray(KEYS_CHECKBOXES[i]);
-//            for (int j = 0; j < arr.length; j++)
-//                checkboxData.get(i).set(j, arr[j]);
-//        }
-//    }
 }
