@@ -49,9 +49,8 @@ public class ScheduleActivity extends Drawer {
     private LocalSchedule localSchedule = null;
 
     /**
-     * localSchedule and pathToStats are initialized here
+     * localSchedule and pathToStats are initialized here if already loaded or in onActivityResult
      */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
@@ -87,7 +86,9 @@ public class ScheduleActivity extends Drawer {
             latestEnter = FileIOUtils.loadSerializableFromFile(PATH_TO_LATEST_DATE, this);
             FileIOUtils.saveObjectToFile(StatsUtils.ensureNotSunday(new GregorianCalendar()), PATH_TO_LATEST_DATE, this);
             saveCheckBoxesToStats(StatsUtils.ensureNotSunday(latestEnter));
-            //TODO make all checkboxes false here
+
+            if (latestEnter.get(Calendar.WEEK_OF_YEAR) != new GregorianCalendar().get(Calendar.WEEK_OF_YEAR))
+                annihilateCheckbox();
         }
 
     }
@@ -103,6 +104,20 @@ public class ScheduleActivity extends Drawer {
         }
 
         return checkboxData;
+    }
+
+    /**
+     * Makes all checkboxes false. Used in the end of the week
+     */
+    void annihilateCheckbox() {
+        ArrayList<ArrayList<Integer>> nill = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_DAYS_IN_WEEK; i++) {
+            nill.add(new ArrayList<Integer>());
+            for (int j = 0; j < MAX_PAIRS_AMOUNT_PER_DAY; j++) {
+                nill.get(i).add(0);
+            }
+        }
+        putCheckbox(nill);
     }
 
     private void putCheckbox(ArrayList<ArrayList<Integer>> checkbox) {
