@@ -210,7 +210,7 @@ public class ScheduleActivity extends Drawer {
 
         if (id == R.id.stats) {
             //starting statistics activity
-            saveCheckBoxesToStats(new GregorianCalendar());
+            saveCheckBoxesToStats(StatsUtils.ensureNotSunday(new GregorianCalendar()));
 
             final Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
             intent.putExtra(EXTRA_PATH_TO_STATS, pathToStats);
