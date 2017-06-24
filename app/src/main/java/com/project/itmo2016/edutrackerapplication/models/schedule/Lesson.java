@@ -19,11 +19,6 @@ public class Lesson implements Serializable {
     @NonNull
     public final Time endTime;
 
-//    @Retention(RetentionPolicy.SOURCE)
-//    @IntDef({0, 1, 2})
-//    public @interface Parity {
-//    }
-
     /**
      * parity can have 3 values:
      * if parity is 0, the lesson is held every week
@@ -31,12 +26,7 @@ public class Lesson implements Serializable {
      * if parity is 2, the lesson is held on even weeks
      */
     @NonNull
-//    @Parity
     public final int parity;
-
-//    @NonNull
-//    public final String teachers; //don't need teacher names currently
-    //Also do not need type, date_start, date_end
 
     /**
      * Auditory can be null, if it is null in JSON parsed, which happens.

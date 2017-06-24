@@ -42,7 +42,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class StatsActivity extends Drawer {
 
-    Stats stats;
+    private Stats stats;
 
     public static final String TAG = "StatsActivity";
 
@@ -52,15 +52,12 @@ public class StatsActivity extends Drawer {
      */
     private static final float shiftUpwards = 0.2f;
 
-    BarChart barChart;
-    TextView errorNoData;
-    TextView headerText;
-    Button next;
-    Button prev;
-    Button switchButton;
+    private BarChart barChart;
+    private TextView errorNoData;
+    private TextView headerText;
 
-    boolean isMonthDisplayed; //Current chart mode: 0 is week, 1 is month
-    GregorianCalendar timePeriodInChart;
+    private boolean isMonthDisplayed; //Current chart mode: 0 is week, 1 is month
+    private GregorianCalendar timePeriodInChart;
 
     /**
      * Method needed for debug only.
@@ -70,10 +67,13 @@ public class StatsActivity extends Drawer {
         int[] numberOfPeriodsEachDay = {4, 5, 5, 4, 4, 4};
 
         GregorianCalendar dateToFillFrom = new GregorianCalendar(2016, Calendar.AUGUST, 1);
-        GregorianCalendar rightNow = new GregorianCalendar(2016, Calendar.DECEMBER, 19);
+        GregorianCalendar rightNow = new GregorianCalendar();
+        rightNow.add(isMonthDisplayed ? Calendar.MONTH : Calendar.WEEK_OF_YEAR, -1);
 
-        if (rightNow.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) //sundays sre never in statistics
+        //sundays are never in statistics
+        if (rightNow.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
             rightNow.add(Calendar.DAY_OF_WEEK, -1);
+        }
 
         while (dateToFillFrom.get(Calendar.YEAR) != rightNow.get(Calendar.YEAR)
                 || dateToFillFrom.get(Calendar.MONTH) != rightNow.get(Calendar.MONTH)
@@ -114,9 +114,9 @@ public class StatsActivity extends Drawer {
         barChart = (BarChart) findViewById(R.id.bar_chart);
         errorNoData = (TextView) findViewById(R.id.error_no_data);
         headerText = (TextView) findViewById(R.id.header_stats_text);
-        next = (Button) findViewById(R.id.next);
-        prev = (Button) findViewById(R.id.previous);
-        switchButton = (Button) findViewById(R.id.switch_button);
+        Button next = (Button) findViewById(R.id.next);
+        Button prev = (Button) findViewById(R.id.previous);
+        Button switchButton = (Button) findViewById(R.id.switch_button);
 
         switchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,10 +202,11 @@ public class StatsActivity extends Drawer {
         legend.setEnabled(false);
 
         XAxis xaxis = barChart.getXAxis();
-        if (isMonth)
+        if (isMonth) {
             xaxis.setLabelCount(15);
-        else
+        } else {
             xaxis.setLabelCount(6);
+        }
         xaxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis yLAxis = barChart.getAxisLeft();
@@ -307,10 +308,11 @@ public class StatsActivity extends Drawer {
     }
 
     private int getIndex(int i, boolean isMonth) {
-        if (!isMonth)
+        if (!isMonth) {
             return stats.attendanceHistory.get(i).date.get(Calendar.DAY_OF_WEEK) - 2;
-        else
+        } else {
             return stats.attendanceHistory.get(i).date.get(Calendar.DATE) - 1;
+        }
     }
 
     private StatsUtils.GeneratedData<BarDataSet> dataGenerator(final GregorianCalendar period, final int length) {
@@ -368,10 +370,13 @@ public class StatsActivity extends Drawer {
     private float getYValue(ArrayList<Boolean> arr) {
         int counter = 0;
         for (int i = 0; i < arr.size(); i++) {
-            if (arr.get(i))
+            if (arr.get(i)) {
                 counter++;
+            }
         }
-        if (arr.size() == 0) return 0;
+        if (arr.size() == 0) {
+            return 0;
+        }
         return (float) counter / (float) arr.size() + shiftUpwards;
     }
 }

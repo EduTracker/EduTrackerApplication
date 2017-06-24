@@ -12,7 +12,7 @@ import java.io.InputStream;
 public final class IOUtils {
 
     /**
-     * Читает содержимое потока в строку, используя указанный charset
+     * Reads stream contents to String using charset
      */
     public static String readToString(InputStream in, String charset) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -27,7 +27,7 @@ public final class IOUtils {
     }
 
     /**
-     * @return Есть ли сейчас живое соединение?
+     * @return Is there current living connection?
      */
     public static boolean isConnectionAvailable(@NonNull Context context, boolean defaultValue) {
         final ConnectivityManager connectivityManager =
@@ -40,7 +40,7 @@ public final class IOUtils {
     }
 
     /**
-     * @return буфер размеров в 8кб для I/O. Потокобезопасный.ы
+     * @return returns thread safe buffer of 8kb size
      */
     static byte[] getIOBuffer() {
         byte[] buffer = bufferThreadLocal.get();
@@ -52,7 +52,6 @@ public final class IOUtils {
     }
 
     private static final ThreadLocal<byte[]> bufferThreadLocal = new ThreadLocal<>();
-
 
     private IOUtils() {
     }

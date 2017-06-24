@@ -6,10 +6,6 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-/**
- * Простейшая реализация ItemDecorator для отрисовки разделителей между
- * элементами списка в RecyclerView - рисует линию толщиной 1px заданного цвета
- */
 public class RecylcerDividersDecorator extends RecyclerView.ItemDecoration {
 
     private final Paint paint;

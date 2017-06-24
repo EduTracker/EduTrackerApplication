@@ -27,15 +27,14 @@ public class ChooseGroupActivity extends AppCompatActivity
     public static final String TAG = "ChooseGroupActivity tag";
     private static final String KEY_EDIT_TEXT = "edit text";
 
-    FrameLayout loadingLayout;
-    FrameLayout enterGroupLayout;
-    EditText enterField;
-    TextView errorInputText;
-    TextView errorLoadingText;
-    Button okButton;
+    private FrameLayout loadingLayout;
+    private FrameLayout enterGroupLayout;
+    private EditText enterField;
+    private TextView errorInputText;
+    private TextView errorLoadingText;
 
-    GlobalSchedule globalSchedule = null;
-    LocalSchedule localSchedule = null;
+    private GlobalSchedule globalSchedule = null;
+    private LocalSchedule localSchedule = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +47,14 @@ public class ChooseGroupActivity extends AppCompatActivity
         enterField = (EditText) findViewById(R.id.group_edit_text);
         errorInputText = (TextView) findViewById(R.id.choose_group_error);
         errorLoadingText = (TextView) findViewById(R.id.error_while_loading_text);
-        okButton = (Button) findViewById(R.id.button_ok_choose_group);
+        Button okButton = (Button) findViewById(R.id.button_ok_choose_group);
         okButton.setOnClickListener(okListener);
 
         loadingLayout.setVisibility(View.VISIBLE);
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             loadFromSavedState(savedInstanceState);
+        }
 
         Bundle b = getIntent().getExtras();
         getSupportLoaderManager().initLoader(0, b, this);
@@ -79,10 +79,11 @@ public class ChooseGroupActivity extends AppCompatActivity
         } else {
             Log.d(TAG, "resultType isn't Ok");
             errorLoadingText.setVisibility(View.VISIBLE);
-            if (data.resultType == ResultType.NO_INTERNET)
+            if (data.resultType == ResultType.NO_INTERNET) {
                 errorLoadingText.setText(R.string.error_no_internet_connection);
-            else
+            } else {
                 errorLoadingText.setText(R.string.error_while_loading);
+            }
         }
     }
 
@@ -96,8 +97,9 @@ public class ChooseGroupActivity extends AppCompatActivity
         public void onClick(View v) {
             String groupName = enterField.getText().toString();
 
-            if (groupName.equals(""))
+            if (groupName.equals("")) {
                 groupName = getString(R.string.default_name_hint); //default group name
+            }
 
             Log.d(TAG, "okButton pressed, groupName entered is: " + groupName);
 

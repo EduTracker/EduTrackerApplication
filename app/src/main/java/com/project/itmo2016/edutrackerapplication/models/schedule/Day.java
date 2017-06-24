@@ -10,16 +10,10 @@ import java.util.ArrayList;
  */
 public class Day implements Serializable {
 
-//    @Retention(RetentionPolicy.SOURCE)
-//    @IntDef({1, 2, 3, 4, 5, 6})
-//    public @interface DaysOfTheWeek {
-//    }
-
     /**
      * Is an int from diapason: [1;6]
      */
     @NonNull
-//    @Day.DaysOfTheWeek
     public final int dayOfTheWeek;
 
     @NonNull

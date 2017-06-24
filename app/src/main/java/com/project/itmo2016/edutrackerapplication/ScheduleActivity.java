@@ -41,10 +41,10 @@ public class ScheduleActivity extends Drawer {
     private static final String PATH_TO_LATEST_DATE = "latestEnter";
     private static final String BASE_FOR_PATH_TO_STATS = "stats";
 
-    GregorianCalendar latestEnter;
-    TextView error;
-    RecyclerView recyclerView;
-    WeekRecycleAdapter adapter = null;
+    private GregorianCalendar latestEnter;
+    private TextView error;
+    private RecyclerView recyclerView;
+    private WeekRecycleAdapter adapter = null;
     private String pathToStats; // = base + groupName
     private LocalSchedule localSchedule = null;
 
@@ -87,8 +87,9 @@ public class ScheduleActivity extends Drawer {
             FileIOUtils.saveObjectToFile(StatsUtils.ensureNotSunday(new GregorianCalendar()), PATH_TO_LATEST_DATE, this);
             saveCheckBoxesToStats(StatsUtils.ensureNotSunday(latestEnter));
 
-            if (latestEnter.get(Calendar.WEEK_OF_YEAR) != new GregorianCalendar().get(Calendar.WEEK_OF_YEAR))
+            if (latestEnter.get(Calendar.WEEK_OF_YEAR) != new GregorianCalendar().get(Calendar.WEEK_OF_YEAR)) {
                 annihilateCheckbox();
+            }
         }
 
     }
@@ -102,7 +103,6 @@ public class ScheduleActivity extends Drawer {
                 checkboxData.get(i).add(table.get(i, j));
             }
         }
-
         return checkboxData;
     }
 
@@ -267,16 +267,6 @@ public class ScheduleActivity extends Drawer {
         error.setVisibility(View.GONE);
         displaySchedule(localSchedule);
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
 
     private boolean isFileCreated(String PATH) {
         File f = new File(getFilesDir(), PATH);

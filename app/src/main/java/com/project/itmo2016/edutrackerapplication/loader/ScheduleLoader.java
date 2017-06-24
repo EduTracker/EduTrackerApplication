@@ -26,10 +26,11 @@ public class ScheduleLoader extends AsyncTaskLoader<LoadResult<GlobalSchedule>> 
 
     @Override
     protected void onStartLoading() {
-        if (data == null)
+        if (data == null) {
             forceLoad();
-        else
+        } else {
             deliverResult(new LoadResult<>(resultType, data));
+        }
     }
 
     @Override

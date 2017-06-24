@@ -15,8 +15,8 @@ import java.util.GregorianCalendar;
 public final class StatsUtils {
 
     private final static class Pair {
-        final float yValue;
-        final int correspondingColor;
+        private final float yValue;
+        private final int correspondingColor;
 
         Pair(float yValue, int correspondingColor) {
             this.yValue = yValue;
@@ -46,16 +46,20 @@ public final class StatsUtils {
 
         for (int i = 1; i < colorsForValues.length; i++) {
             if (colorsForValues[i - 1].yValue <= yValue && colorsForValues[i].yValue >= yValue) {
-                if (Math.abs(colorsForValues[i - 1].yValue - yValue) < Math.abs(colorsForValues[i].yValue - yValue))
+                if (Math.abs(colorsForValues[i - 1].yValue - yValue) < Math.abs(colorsForValues[i].yValue - yValue)) {
                     return colorsForValues[i - 1];
-                else return colorsForValues[i];
+                } else {
+                    return colorsForValues[i];
+                }
             }
         }
 
         //if yValue is not in range (it must never happen), still closest is returned
-        if (yValue < colorsForValues[0].yValue)
+        if (yValue < colorsForValues[0].yValue) {
             return colorsForValues[0];
-        else return colorsForValues[colorsForValues.length - 1];
+        } else {
+            return colorsForValues[colorsForValues.length - 1];
+        }
     }
 
     /**
